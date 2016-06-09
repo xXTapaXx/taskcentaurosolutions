@@ -1,0 +1,97 @@
+
+<div layout:decorator="layout/dashboard">
+
+
+<div layout:fragment="container">
+
+	<div class="span7">   
+		<div class="widget stacked widget-table action-table">
+    				<div class="col-md-12 padding-0 taskCollapse">
+    				
+    				<div class="col-lg-4 col-md-4 col-xs-4" style="padding:0;">
+    					 <a href="javascript:void(0)"  data-toggle="modal" data-target="#complete-dialog" class="taskListLeft" data-title="taskListEdit" th:each="tasksList : ${listLeft}" th:id="${tasksList.id}">
+                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10  taskListsPadding"  >
+                                    
+                                    <div class="panel box-v1">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
+                                          <h4 class="text-left" th:text="${tasksList.title}"></h4>
+                                        </div>
+                                                                         
+                                      <div class="panel-body text-center">
+	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
+							                <label th:if="${task.status} == 'completed'">
+							                  <input type="checkbox"  checked="checked" /><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
+							                </label>
+							                <label th:unless="${task.status} == 'completed'">
+							                  <input type="checkbox"   /><span class="check"></span> <span th:text="${task.title}"></span>			                  
+							                </label>
+							              </div>                                                                                                        
+                                      </div>
+                                    </div>
+                                </div>
+                                </a>
+    				</div>
+    				
+    				<div class="col-lg-4 col-md-4 col-xs-4" style="padding:0;">
+    					 <a href="javascript:void(0)"  data-toggle="modal" data-target="#complete-dialog"  class="taskListCenter" data-title="taskListEdit" th:each="tasksList : ${listCenter}" th:id="${tasksList.id}">
+                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10 taskListsPadding"  >
+                                    
+                                    <div class="panel box-v1">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
+                                          <h4 class="text-left" th:text="${tasksList.title}"></h4>
+                                        </div>
+                                                                         
+                                      <div class="panel-body text-center">
+	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
+							                <label th:if="${task.status} == 'completed'">
+							                  <input type="checkbox"  checked="checked" /><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
+							                </label>
+							                <label th:unless="${task.status} == 'completed'">
+							                  <input type="checkbox"   /><span class="check"></span> <span th:text="${task.title}"></span>			                  
+							                </label>
+							              </div>                                                                                                        
+                                      </div>
+                                    </div>
+                                </div>
+                                </a>
+    				</div>
+    				
+    				<div class="col-lg-4 col-md-4 col-xs-4" style="padding:0;">
+    					 <a href="javascript:void(0)"  data-toggle="modal" data-target="#complete-dialog"  class="taskListRight" data-title="taskListEdit" th:each="tasksList : ${listRight}" th:id="${tasksList.id}">
+                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10 taskListsPadding"  >
+                                    
+                                    <div class="panel box-v1">
+                                        <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
+                                          <h4 class="text-left" th:text="${tasksList.title}"></h4>
+                                        </div>
+                                                                         
+                                      <div class="panel-body text-center">
+	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
+							                <label th:if="${task.status} == 'completed'">
+							                  <input type="checkbox"  checked="checked" /><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
+							                </label>
+							                <label th:unless="${task.status} == 'completed'">
+							                  <input type="checkbox"   /><span class="check"></span> <span th:text="${task.title}"></span>			                  
+							                </label>
+							              </div>                                                                                                        
+                                      </div>
+                                    </div>
+                                </div>
+                                </a>
+    				</div>
+                                
+                               
+                            </div>			
+		</div> <!-- /widget-content -->		
+	</div> <!-- /widget -->
+</div>
+
+ 
+<div layout:fragment="css"> 
+
+</div>
+
+<div layout:fragment="js"> 
+	<script>getRandomColor();</script>
+</div>
+</div>

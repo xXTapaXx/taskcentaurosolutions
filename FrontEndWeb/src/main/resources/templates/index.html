@@ -62,16 +62,16 @@
                                     
                                     <div class="panel box-v1">
                                         <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
-                                          <h4 class="text-left" th:text="${tasksList.title}"></h4>
+                                          <h4 th:class="|text-left ${tasksList.id}|" th:text="${tasksList.title}"></h4>
                                         </div>
                                                                          
                                       <div class="panel-body text-center">
 	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
 							                <label th:if="${task.status} == 'completed'">
-							                  <input type="checkbox"  checked="checked" /><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
+							                  <input type="checkbox"  th:class="|${task.id}|" checked="checked" /><span class="check"></span> <span th:class="|${task.id} completed|" th:text="${task.title}"></span>			                  
 							                </label>
 							                <label th:unless="${task.status} == 'completed'">
-							                  <input type="checkbox"   /><span class="check"></span> <span th:text="${task.title}"></span>			                  
+							                  <input type="checkbox"   th:class="|${task.id}|" /><span class="check"></span> <span th:class="${task.id}" th:text="${task.title}"></span>			                  
 							                </label>
 							              </div>                                                                                                        
                                       </div>

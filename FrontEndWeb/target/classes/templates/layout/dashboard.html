@@ -36,6 +36,7 @@
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	    <form action="" method="POST" id="formInsertTasks">
+	    <input type="hidden" name="id" id="idListTask"/>
 	      <div class="modal-header">
 	      
 	        <div class="col-md-10">
@@ -61,7 +62,7 @@
 	
 	
 	<div class="button-agregar">
-		<a href="javascript:void(0)" class="btn btn-raised btn-success btn-fab" data-toggle="modal" data-target="#complete-dialog"><i class="material-icons">add</i><div class="ripple-container"></div></a>
+		<a href="javascript:void(0)" class="btn btn-raised btn-success btn-fab" data-title="openModel" data-toggle="modal" data-target="#complete-dialog"><i class="material-icons">add</i><div class="ripple-container"></div></a>
 	</div>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>

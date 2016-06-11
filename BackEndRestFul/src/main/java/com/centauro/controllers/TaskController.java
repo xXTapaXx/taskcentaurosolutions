@@ -47,7 +47,7 @@ public class TaskController {
         
     }*/
     
-    @RequestMapping("/insertTask")
+    /*@RequestMapping("/insertTask")
     public Task insertTaskList(HttpServletRequest request) {
     	
     	Task result = null;
@@ -65,9 +65,9 @@ public class TaskController {
     	
     	return result;
         
-    }
+    }*/
     
-    @RequestMapping("/updateTaskList")
+    /*@RequestMapping("/updateTaskList")
     public Task updateTaskList(HttpServletRequest request) {
     	
     	Task result = null;
@@ -86,7 +86,7 @@ public class TaskController {
     	
     	return result;
         
-    }
+    }*/
     
     @RequestMapping("/deleteTaskList")
     public boolean deleteTaskList(HttpServletRequest request) {

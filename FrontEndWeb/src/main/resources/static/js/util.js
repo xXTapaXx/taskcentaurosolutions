@@ -32,10 +32,13 @@ jQuery(document).ready(function () {
 						"<div class='col-lg-11 col-md-11 col-xs-11'>" +
 				      		"<input type='text' name='task' class='form-control'  placeholder='Tarea'></input>" +
 				      	"</div>" +
-				     "</div>";
-	        jQuery("#btnTask").attr('onClick','insertTasks()');	
+				     "</div>";	
 	        jQuery(".addTask").append(task);
 	        
+	});
+	
+	jQuery("a[data-title=openModel]").click(function (){
+		jQuery("#idListTask").val("");
 	});
 	
 	jQuery("a[data-title=taskListEdit]").click(function () {
@@ -56,13 +59,13 @@ jQuery(document).ready(function () {
         			"<div class='col-lg-1 col-md-1 col-xs-1'>" +
         				"<div class='checkbox text-left'>" +
         					"<label>" +
-        						"<input type='checkbox' checked><span class='checkbox-material'>" +
+        						"<input type='checkbox' onChange=\"changeStatus(\'"+id+"\',\'"+data[0].items[i].id+"\',\'completed\')\" checked><span class='checkbox-material'>" +
         						"<span class='check'></span></span>" +
         					"</label>" +
         				"</div>" +
                   	"</div>" +
         			"<div class='col-lg-11 col-md-11 col-xs-11'>" +
-                  		"<input type='text' name='task' class='form-control'  value='"+data[0].items[i].title+"' style=-text-decoration:line-through;-></input>" +
+                  		"<input type='text' class='form-control completed' onInput=\"updateTask(\'"+id+"\',\'"+data[0].items[i].id+"\');\" id='"+data[0].items[i].id+"' value='"+data[0].items[i].title+"' ></input>" +
                   	"</div>" +
                  "</div>";
 				}else{
@@ -70,13 +73,13 @@ jQuery(document).ready(function () {
         			"<div class='col-lg-1 col-md-1 col-xs-1'>" +
         				"<div class='checkbox text-left'>" +
         					"<label>" +
-        						"<input type='checkbox' ><span class='checkbox-material'>" +
+        						"<input type='checkbox' onChange=\"changeStatus(\'"+id+"\',\'"+data[0].items[i].id+"\',\'needsAction\')\" ><span class='checkbox-material'>" +
         						"<span class='check'></span></span>" +
         					"</label>" +
         				"</div>" +
                   	"</div>" +
         			"<div class='col-lg-11 col-md-11 col-xs-11'>" +
-                  		"<input type='text' name='task' class='form-control'  value='"+data[0].items[i].title+"'></input>" +
+                  		"<input type='text' class='form-control' onInput=\"updateTask(\'"+id+"\',\'"+data[0].items[i].id+"\');\" id='"+data[0].items[i].id+"' value='"+data[0].items[i].title+"'></input>" +
                   	"</div>" +
                  "</div>";
 				}
@@ -88,9 +91,9 @@ jQuery(document).ready(function () {
                 		"</div>";*/
 				
 			}
-	        
-	        jQuery("#btnTask").attr('onClick','editTask()');
+	        jQuery("#idListTask").val(id);
 	        jQuery("#titleTask").val(title);
+	        jQuery("#titleTask").attr('onInput',"updateTaskList(\'"+id+"\')");
 	        jQuery(".addTask").html(task);
 	        
 	     })
@@ -104,6 +107,68 @@ jQuery(document).ready(function () {
 
 });	
 
+function changeStatus(listIdParam,idParam,statusParam){
+	jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://localhost:8081/updateTaskStatus",
+        data: {id: idParam, listId: listIdParam, status: statusParam},
+    })
+     .done(function( data, textStatus, jqXHR ) {
+    	 
+     })
+     .fail(function( jqXHR, textStatus, errorThrown ) {
+        //alert(textStatus);
+    });
+	
+	if(data.status == "completed"){
+		jQuery("input#"+idParam).addClass("completed");
+		jQuery("span."+idParam).addClass("completed");
+		jQuery('input:checkbox' + "."+idParam).attr("checked",true);
+	}else{
+		jQuery("input#"+idParam).removeClass("completed");
+		jQuery("span."+idParam).removeClass("completed");
+		jQuery('input:checkbox' + "."+idParam).attr("checked",false);
+	}
+	
+}
+
+function updateTask(listIdParam,taskIdParam){
+	var titleParam = jQuery("#"+taskIdParam).val();
+	jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://localhost:8081/updateTask",
+        data: {id: taskIdParam, listId: listIdParam, title: titleParam},
+    })
+     .done(function( data, textStatus, jqXHR ) {
+    	 jQuery("span."+taskIdParam).text(data.title);
+     })
+     .fail(function( jqXHR, textStatus, errorThrown ) {
+        //alert(textStatus);
+    });
+	
+	
+}
+
+function updateTaskList(listIdParam){
+	var titleParam = jQuery("#titleTask").val();
+	jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "http://localhost:8081/updateTasksList",
+        data: {id: listIdParam, title: titleParam},
+    })
+     .done(function( data, textStatus, jqXHR ) {
+    	 jQuery("h4."+listIdParam).text(data.title);
+     })
+     .fail(function( jqXHR, textStatus, errorThrown ) {
+        //alert(textStatus);
+    });
+	
+	
+}
+
 
 function getRandomColor() {
 
@@ -112,6 +177,8 @@ function getRandomColor() {
 	  count : 1
 	 });
 }
+
+
 
 function insertTasks(){
 	jQuery.ajax({

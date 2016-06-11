@@ -7,3 +7,7 @@
 .taskListsPadding{
 	padding: 10px 10px 0px 0px;
 }
+
+.completed{
+	text-decoration:line-through;
+}

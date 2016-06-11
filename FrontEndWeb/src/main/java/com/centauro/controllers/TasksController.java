@@ -60,10 +60,11 @@ public class TasksController {
 		String idTasksList = null;
 		try{
 			RestTemplate restTemplate = new RestTemplate();
-			String[] title = request.getParameterValues("title");
+			String title = request.getParameter("title");
 			String[] task = request.getParameterValues("task");
+			String id = request.getParameter("id");
 			
-			idTasksList = restTemplate.getForObject("http://localhost:8081/insertTasksList/{title}", String.class,title[0]);
+			idTasksList = restTemplate.getForObject("http://localhost:8081/insertTasksList?title={title}&id={id}", String.class,title,id);
 			
 			for(Integer i = 0; i < task.length; i++){
 										

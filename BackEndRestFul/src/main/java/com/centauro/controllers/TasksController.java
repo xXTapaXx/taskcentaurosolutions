@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,9 @@ import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
+import com.google.gson.Gson;
+
+import scala.annotation.meta.getter;
 
 @RestController
 public class TasksController {
@@ -29,7 +33,7 @@ public class TasksController {
     @RequestMapping("/taskslists")
     public List<?> getTasksLists(HttpServletRequest request) {
     	new HashMap<String, String>();
-    	List<TaskView> response = new ArrayList<TaskView>();
+    	List<TaskView> response = new LinkedList<TaskView>();
     	List<Task> arraylistResult = null ;
 	    TaskView taskView = null;
     	TaskLists result = null;
@@ -38,9 +42,14 @@ public class TasksController {
 			
 			 result = service.tasklists().list().execute();
 			 
+			 
 			 List<TaskList> tasklists = result.getItems();
 			 for (TaskList tasklist : tasklists) {
-				
+				 
+				/* if(!tasklist.getTitle().equals("Lista de Jason Gamboa")){
+					 service.tasklists().delete(tasklist.getId()).execute();
+				 }*/
+				 
 				 com.google.api.services.tasks.model.Tasks tasks = service.tasks().list(tasklist.getId()).execute();
 				 arraylistResult = new ArrayList<Task>();
 				 taskView = new TaskView();
@@ -56,7 +65,7 @@ public class TasksController {
 			            }
 		            }
 				 
-				 taskView.setTasks(arraylistResult);
+				taskView.setTasks(arraylistResult);
 				 response.add(taskView);
 			 	}
 			 
@@ -91,28 +100,45 @@ public class TasksController {
     
     @RequestMapping("/insertTasksList")
     public String insertTasksList(HttpServletRequest request) {
-    	
-    	TaskList result = null;
-    	String title = request.getParameter("title");
-    	String id = request.getParameter("id");
+    	Gson gson = new Gson();
+    	TaskList ListTasks = null;
+    	Task resultTask = null;
+    	//String title = request.getParameter("title");
+    	//String id = request.getParameter("id");
+    	String tasks = request.getParameter("tasks");
+    	TaskView taskView = gson.fromJson(tasks, TaskView.class);
     	try {
+    		
 			Tasks service = TasksQuickstart.getTasksService();
 			
-			if(id != null){
-				result = service.tasklists().get(id).execute();
-			}else{
+			/*if(id != null){
+				ListTasks = service.tasklists().get(id).execute();
+			}else{*/
 				TaskList taskList = new TaskList();
-				taskList.setTitle(title);
-				
-				 result = service.tasklists().insert(taskList).execute();
-			}
+				taskList.setTitle(taskView.getTitle());		
+				ListTasks = service.tasklists().insert(taskList).execute();
+					if(taskView.getItems() != null)
+	    	   		{
+					
+					 
+					 for (Task task : taskView.getItems()) {
+						
+						 	Task insertTask = new Task();
+						 	insertTask.setTitle(task.getTitle());
+	
+						 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
+				            }
+		            }
+
+							 
+			//}
 					 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	
-    	return result.getId();
+    	return ListTasks.getId();
         
     }
     

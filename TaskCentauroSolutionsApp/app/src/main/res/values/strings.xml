@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Task Centauro Solutions</string>
+    <string name="action_settings">Settings</string>
+    <string name="api_url">http://192.168.1.243:8081</string>
+</resources>

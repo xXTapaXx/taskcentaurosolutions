@@ -2,12 +2,16 @@ package app.jason.com.taskcentaurosolutionsapp;
 
 
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +25,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 
+import Adapters.CustomAdapterEditTask;
 import controllers.ServiceController;
 import views.TaskListView;
 import views.TaskView;
@@ -30,19 +36,51 @@ import views.TaskView;
 public class CreateTaskActivity extends AppCompatActivity implements Response.Listener<String>, Response.ErrorListener {
     List<EditText> listEditText;
     List<TaskView> listTaskView;
+    TaskListView taskListView;
     String idTask;
     String tag;
     ServiceController serviceController;
     Gson gson;
+    TextView textViewTitleTask;
+    LinearLayout addTaskView;
+    ListView listView;
+    LayoutInflater inflater;
+    CustomAdapterEditTask adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
 
+        listEditText = new ArrayList<EditText>();
+        listTaskView = new ArrayList<TaskView>();
 
+        //Inicializamos el customAdapter
+        adapter = new CustomAdapterEditTask(this,listTaskView);
+        //Inicializamos las listas
+
+        //Inicializamos el listView
+        listView = (ListView) findViewById(R.id.list_view_tasks);
+
+        //Instancia del Gson
+        gson = new Gson();
+        //Inicializamos el ServiceController
+        serviceController = new ServiceController();
+
+        //Inicializamos el inflate
+        inflater = (LayoutInflater) getApplicationContext().
+                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //Se inicializa el texto del titulo de la tarea
+         textViewTitleTask = (TextView) findViewById(R.id.title_list);
+
+        //Inicializamos el layout
+        // addTaskView = (LinearLayout)findViewById(R.id.task_list);
+
+        //Se activa el boton para regresar a la actividad anterior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button button = (Button) findViewById(R.id.add_task);
+        TextView button = (TextView) findViewById(R.id.add_task);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,14 +89,11 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
             }
         });
 
-        //Inicializamos las listas
-        listEditText = new ArrayList<EditText>();
-        listTaskView = new ArrayList<TaskView>();
+        taskListView = (TaskListView) getIntent().getSerializableExtra("ListView");
 
-        //Instancia del Gson
-        gson = new Gson();
-        //Inicializamos el ServiceController
-        serviceController = new ServiceController();
+        if(taskListView != null){
+            onAddEditTast(taskListView);
+        }
     }
 
     @Override
@@ -80,20 +115,14 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
 
     public void onSaveTasks() throws UnsupportedEncodingException {
         //Se Crean las variables a usar en este metodo
-        TextView textViewTitleTask = (TextView) findViewById(R.id.title_list);
         TaskListView taskListView;
-        TaskView taskView;
         tag = "idTask";
 
-        for (int i = 0; i < listEditText.size(); i++){
-
-            taskView = new TaskView(null,listEditText.get(i).getText().toString(),null);
-
-            listTaskView.add(taskView);
-
+        for(int i = 0; i < listTaskView.size(); i++){
+            onUpdateList(i);
         }
 
-        taskListView = new TaskListView(null,textViewTitleTask.getText().toString(),listTaskView);
+        taskListView = new TaskListView(idTask,textViewTitleTask.getText().toString(),listTaskView);
 
         //Convertimos la respuesta json a una lista de TaskListView
         String tasks = gson.toJson(taskListView, TaskListView.class);
@@ -105,23 +134,47 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
 
     }
     public void onAddTask(){
-        //Creamos el texto para crear mas tareas
-        EditText editText = (EditText) new EditText(this);
 
-        //Le agregamos algunos valores a esas tareas
-        editText.setHint("Task");
+        for(int i = 0; i < listTaskView.size(); i++){
+            onUpdateList(i);
+        }
+        //Agregamos un item nuevo a listTaskView
+        listTaskView.add(new TaskView(null,null,null,true));
+        adapter.notifyDataSetChanged();
 
-        //Inicializamos el layout
-        LinearLayout createTask = (LinearLayout)findViewById(R.id.task_list);
+        listView.setAdapter(adapter);
 
-        //Le agregamos el campo de texto al layout
-        createTask.addView(editText);
+    }
 
-        //Agregamos el campo edit text a la lista
-        listEditText.add(editText);
+    public void onUpdateList(int position){
+        View view = listView.getChildAt(position);
+        EditText editTextUpdate = (EditText) view.findViewById(R.id.edit_task);
+        CheckBox checkBoxUpdate = (CheckBox) view.findViewById(R.id.checkbox_edit);
+
+        if(checkBoxUpdate.isChecked()){
+            listTaskView.get(position).setStatus("completed");
+        }else{
+            checkBoxUpdate.setChecked(false);
+            listTaskView.get(position).setStatus("needsAction");
+        }
+        listTaskView.get(position).setTitle(editTextUpdate.getText().toString());
+        adapter.notifyDataSetChanged();
+    }
+
+    public void onAddEditTast(TaskListView taskListViews){
+      View  convertView = inflater.inflate(R.layout.edit_task,null);
+
+            //Seteamos algunas valores
+            idTask = taskListViews.getId();
+            textViewTitleTask.setText(taskListViews.getTitle());
+
+        for (int i = 0; i < taskListViews.getTasks().size(); i++){
+            listTaskView.add(new TaskView(taskListViews.getTasks().get(i).getId(),taskListViews.getTasks().get(i).getTitle(),taskListViews.getTasks().get(i).getStatus(),false));
+            adapter.notifyDataSetChanged();
+        }
 
 
-
+        listView.setAdapter(adapter);
 
     }
 
@@ -132,6 +185,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
 
     @Override
     public void onResponse(String response) {
+
         Toast.makeText(getApplicationContext(),"Se agrego Exitosamente",Toast.LENGTH_SHORT).show();
 
 

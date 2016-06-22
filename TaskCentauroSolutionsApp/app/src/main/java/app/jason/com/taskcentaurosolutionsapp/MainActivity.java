@@ -1,6 +1,7 @@
 package app.jason.com.taskcentaurosolutionsapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     GridView clickGridView;
     CustomAdapterListTasks adaptador;
     SwipeRefreshLayout swipeRefreshLayout;
+    List<TaskListView> listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,16 +66,15 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
         onRequest();
 
         //Inicializamos el GridView
-        clickGridView = (GridView) findViewById(R.id.grid_view);
+       /* clickGridView = (GridView) findViewById(R.id.grid_view);
 
         //Agregamos accion de click item al gridView
         clickGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), CreateTaskActivity.class);
-                startActivity(intent);
+
             }
-        });
+        });*/
 
         //Codigo del boton Flotante
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -93,6 +95,12 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
 
             }
         }, 1000);
+    }
+
+    public void onClickShow(int position){
+        Intent intent = new Intent(getApplicationContext(),CreateTaskActivity.class);
+        intent.putExtra("ListView",listView.get(position));
+        startActivityForResult(intent,1);
     }
 
 
@@ -145,14 +153,14 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
         Gson gson = new Gson();
         //Convertimos la respuesta json a una lista de TaskListView
         Type type = new TypeToken<List<TaskListView>>(){}.getType();
-        List<TaskListView> listView = (List<TaskListView>) gson.fromJson(response.toString(),type);
+        listView = (List<TaskListView>) gson.fromJson(response.toString(),type);
         //Instancia del GridView
         gridView = (GridView)findViewById(R.id.grid_view);
         //Inicializar el adaptador con los datos de la respuesta
-        adaptador = new CustomAdapterListTasks(this, listView);
+        adaptador = new CustomAdapterListTasks(this,listView);
         //Relacionando el GridView con el adaptador
-
         gridView.setAdapter(adaptador);
+
 
         Toast.makeText(getApplicationContext(),"Refrescando",Toast.LENGTH_LONG).show();
         swipeRefreshLayout.setRefreshing(false);

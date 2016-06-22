@@ -2,11 +2,13 @@ package Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,6 +16,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import app.jason.com.taskcentaurosolutionsapp.CreateTaskActivity;
+import app.jason.com.taskcentaurosolutionsapp.MainActivity;
 import app.jason.com.taskcentaurosolutionsapp.R;
 import utils.HelperSizeLista;
 import views.TaskListView;
@@ -25,11 +29,11 @@ import views.TaskView;
 public class CustomAdapterListTasks extends BaseAdapter {
 
     private List<TaskListView> task;
-    private Activity context;
+    private MainActivity context;
     private LayoutInflater inflater;
 
 
-    public CustomAdapterListTasks(Activity activity, List<TaskListView> task){
+    public CustomAdapterListTasks(MainActivity activity, List<TaskListView> task){
 
         this.context = activity;
         this.task = task;
@@ -53,7 +57,7 @@ public class CustomAdapterListTasks extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder;
 
         if(convertView == null){
@@ -68,6 +72,12 @@ public class CustomAdapterListTasks extends BaseAdapter {
         }
 
         holder.title.setText(task.get(position).getTitle());
+        holder.title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.onClickShow(position);
+            }
+        });
 
         holder.listView.setAdapter( new CustomAdapterTask(context,task.get(position).getTasks()));
 

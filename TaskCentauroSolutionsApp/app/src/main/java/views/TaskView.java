@@ -2,16 +2,20 @@ package views;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by Tapa on 14/06/2016.
  */
-public class TaskView {
+public class TaskView implements Serializable {
 
     public String id;
 
     public String title;
 
     public String status;
+
+    public Boolean isNew;
 
     public String getId() {
         return id;
@@ -37,11 +41,20 @@ public class TaskView {
         this.status = status;
     }
 
-    public TaskView(String id, String title, String status){
+    public Boolean getNew() {
+        return isNew;
+    }
+
+    public void setNew(Boolean aNew) {
+        isNew = aNew;
+    }
+
+    public TaskView(String id, String title, String status,Boolean isNew){
 
         this.id = id;
         this.title = title;
         this.status = status;
+        this.isNew = isNew;
 
     }
 }

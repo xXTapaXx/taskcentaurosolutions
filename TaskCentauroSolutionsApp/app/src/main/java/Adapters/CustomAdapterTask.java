@@ -2,6 +2,7 @@ package Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,13 +66,17 @@ public class CustomAdapterTask extends BaseAdapter {
             holder = (Holder) convertView.getTag();
         }
 
+        holder.task.setText(task.get(position).getTitle());
+
        if(task.get(position).getStatus().equals("completed")){
             holder.checkBox.setChecked(true);
+           holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else{
-            holder.checkBox.setChecked(false);
-        }
+           holder.checkBox.setChecked(false);
+           holder.task.setPaintFlags(0);
+       }
 
-        holder.task.setText(task.get(position).getTitle());
+
 
         return convertView;
     }

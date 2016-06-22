@@ -3,13 +3,14 @@ package views;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Tapa on 14/06/2016.
  */
-public class TaskListView {
+public class TaskListView implements Serializable {
 
     public String id;
 

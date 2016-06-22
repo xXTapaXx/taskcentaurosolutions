@@ -30,7 +30,7 @@ public class TasksController {
 
     TasksQuickstart tasksQuickstart = new TasksQuickstart();
     
-    @RequestMapping("/taskslists")
+    @RequestMapping("/taskslists") 
     public List<?> getTasksLists(HttpServletRequest request) {
     	new HashMap<String, String>();
     	List<TaskView> response = new LinkedList<TaskView>();
@@ -111,27 +111,38 @@ public class TasksController {
     		
 			Tasks service = TasksQuickstart.getTasksService();
 			
-			/*if(id != null){
-				ListTasks = service.tasklists().get(id).execute();
-			}else{*/
+			if(taskView.getId() != null){
+				ListTasks = service.tasklists().get(taskView.getId()).execute();
+				ListTasks.setTitle(taskView.getTitle());
+
+				service.tasklists().update(taskView.getId(), ListTasks).execute();
+			}else{
 				TaskList taskList = new TaskList();
 				taskList.setTitle(taskView.getTitle());		
-				ListTasks = service.tasklists().insert(taskList).execute();
-					if(taskView.getItems() != null)
-	    	   		{
-					
-					 
+				ListTasks = service.tasklists().insert(taskList).execute();		
+			}	 
 					 for (Task task : taskView.getItems()) {
 						
-						 	Task insertTask = new Task();
-						 	insertTask.setTitle(task.getTitle());
-	
-						 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
+						 	if(task.getId() != null){
+						 		
+						 		
+						 		resultTask = service.tasks().get(taskView.getId(),task.getId()).execute();
+						 		resultTask.setTitle(task.getTitle());
+								resultTask.setStatus(task.getStatus());
+								 service.tasks().update(taskView.getId(), task.getId(), task).execute();
+								 
+						 		}else{
+						 			Task insertTask = new Task();
+								 	insertTask.setTitle(task.getTitle());
+			
+								 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
+						 		}
+						 	
 				            }
-		            }
+		            
 
 							 
-			//}
+			
 					 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

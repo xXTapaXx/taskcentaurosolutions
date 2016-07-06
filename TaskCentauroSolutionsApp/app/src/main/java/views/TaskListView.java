@@ -18,6 +18,8 @@ public class TaskListView implements Serializable {
 
     public List<TaskView> tasks;
 
+    public String date;
+
     public String getId() {
         return id;
     }
@@ -42,13 +44,18 @@ public class TaskListView implements Serializable {
         this.tasks = tasks;
     }
 
-    public TaskListView(String id,  String title, List<TaskView> tasks){
+    public String getDate() {
+        return date;
+    }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public TaskListView(String id, String title, List<TaskView> tasks, String date) {
         this.id = id;
         this.title = title;
         this.tasks = tasks;
-
-
+        this.date = date;
     }
-
 }

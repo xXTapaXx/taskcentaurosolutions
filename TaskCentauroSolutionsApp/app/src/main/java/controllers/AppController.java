@@ -66,15 +66,7 @@ public class AppController extends Application {
     }
 
     public <T> void addToRequestQueue(Request<T> req) {
-        //req.setTag(TAG);
-        if (req != null) {
-            req.setTag(TAG);
-
-            req.setRetryPolicy(new DefaultRetryPolicy(
-                    60000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            ));
-
-        }
+        req.setTag(TAG);
         getRequestQueue().add(req);
     }
 

@@ -1,10 +1,9 @@
 package controllers;
 
+
 import android.widget.ImageView;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -14,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
-
 
 
 /**
@@ -102,19 +100,6 @@ public class ServiceController {
 
         //String
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
-    }
-
-    public void stringRequest(String url, int method, Map<String, String> params, Response.Listener<String> response, Response.ErrorListener error,String tag) {
-        this.url = url;
-        this.method = method;
-        this.params = params;
-
-        StringRequest strReq;
-
-        strReq = new StringRequest(this.getMethod(), this.getUrl(), response, error);
-
-        //String
-        AppController.getInstance().addToRequestQueue(strReq, tag);
     }
 
     public void imageRequest(String url, ImageView imageView, int icon_loading, int icon_error) {

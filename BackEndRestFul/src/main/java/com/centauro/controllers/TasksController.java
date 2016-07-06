@@ -10,12 +10,22 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.centauro.view.TaskView;
+import com.centauro.exception.ShopNotFound;
+import com.centauro.model.ListModel;
+import com.centauro.model.SharedModel;
+import com.centauro.model.TaskModel;
+import com.centauro.service.ListService;
+import com.centauro.service.SharedService;
+import com.centauro.service.TaskService;
+import com.centauro.view.SharedView;
+import com.centauro.view.TaskListView;
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.model.Task;
@@ -27,15 +37,32 @@ import scala.annotation.meta.getter;
 
 @RestController
 public class TasksController {
+	
+	
 
     TasksQuickstart tasksQuickstart = new TasksQuickstart();
     
+    @RequestMapping("/taskslists2") 
+    public List<?> getTasksLists2(HttpServletRequest request) {
+    	Gson gson = new Gson();
+    	TaskList ListTasks = null;
+    	Task resultTask = null;
+    	String shared = request.getParameter("shared");
+    	SharedView taskView = gson.fromJson(shared, SharedView.class);
+			
+			
+    		
+    	return null;
+    	
+        
+    }
+    
     @RequestMapping("/taskslists") 
-    public List<?> getTasksLists(HttpServletRequest request) {
+    public TaskLists getTasksLists(HttpServletRequest request) {
     	new HashMap<String, String>();
-    	List<TaskView> response = new LinkedList<TaskView>();
+    	List<TaskListView> response = new LinkedList<TaskListView>();
     	List<Task> arraylistResult = null ;
-	    TaskView taskView = null;
+	    TaskListView taskView = null;
     	TaskLists result = null;
     	try {
 			Tasks service = TasksQuickstart.getTasksService();
@@ -52,7 +79,7 @@ public class TasksController {
 				 
 				 com.google.api.services.tasks.model.Tasks tasks = service.tasks().list(tasklist.getId()).execute();
 				 arraylistResult = new ArrayList<Task>();
-				 taskView = new TaskView();
+				 taskView = new TaskListView();
 				 taskView.setId(tasklist.getId());
 				 taskView.setTitle(tasklist.getTitle());
 				if(tasks.getItems() != null)
@@ -74,7 +101,7 @@ public class TasksController {
 			e.printStackTrace();
 		}
     	
-    	return response;
+    	return result;
     	
         
     }
@@ -106,7 +133,7 @@ public class TasksController {
     	//String title = request.getParameter("title");
     	//String id = request.getParameter("id");
     	String tasks = request.getParameter("tasks");
-    	TaskView taskView = gson.fromJson(tasks, TaskView.class);
+    	TaskListView taskView = gson.fromJson(tasks, TaskListView.class);
     	try {
     		
 			Tasks service = TasksQuickstart.getTasksService();
@@ -176,9 +203,9 @@ public class TasksController {
     @RequestMapping("/getTaskList/{id}")
     public List<?> getTaskLists(@PathVariable(value="id") String id) {
     	
-    	List<TaskView> response = new ArrayList<TaskView>();
+    	List<TaskListView> response = new ArrayList<TaskListView>();
     	List<Task> arraylistResult = null ;
-	    TaskView taskView = null;
+	    TaskListView taskView = null;
 	    TaskList tasksList = null;
     	try {
 			Tasks service = TasksQuickstart.getTasksService();
@@ -187,7 +214,7 @@ public class TasksController {
 		
 				 com.google.api.services.tasks.model.Tasks tasks = service.tasks().list(tasksList.getId()).execute();
 				 arraylistResult = new ArrayList<Task>();
-				 taskView = new TaskView();
+				 taskView = new TaskListView();
 				 taskView.setId(tasksList.getId());
 				 taskView.setTitle(tasksList.getTitle());
 				if(tasks.getItems() != null)

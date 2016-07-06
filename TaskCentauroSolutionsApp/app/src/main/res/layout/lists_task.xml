@@ -8,12 +8,12 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkbox"/>
+        android:id="@+id/checkbox" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:text="New Task"
-        android:layout_marginTop="0.5dp"
-        android:id="@+id/task" />
+        android:id="@+id/task"
+        android:layout_weight="1" />
 </LinearLayout>

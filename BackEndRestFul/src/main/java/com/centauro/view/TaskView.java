@@ -6,26 +6,45 @@ import com.google.api.services.tasks.model.Task;
 
 public class TaskView {
 	
-	public String id = null;
-	public String title = null;
-	public List<Task> tasks = null;
-	public String getTitle() {
-		return title;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public List<Task> getItems() {
-		return tasks;
-	}
-	public void setTasks(List<Task> tasks) {
-		this.tasks = tasks;
-	}
+	 public String id;
+
+	    public String title;
+
+	    public String status;
+
+	    public Boolean isNew;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public String getStatus() {
+			return status;
+		}
+
+		public void setStatus(String status) {
+			this.status = status;
+		}
+
+		public Boolean getIsNew() {
+			return isNew;
+		}
+
+		public void setIsNew(Boolean isNew) {
+			this.isNew = isNew;
+		}
 	
+	    
 }

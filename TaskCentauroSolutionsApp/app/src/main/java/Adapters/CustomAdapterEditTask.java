@@ -1,7 +1,9 @@
 package Adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,10 +75,28 @@ public class CustomAdapterEditTask extends BaseAdapter {
                holder.checkBox.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View v) {
-                       context.onUpdateList(position);
+                       context.onUpdateList();
                    }
                });
                holder.task = (TextView) convertView.findViewById(R.id.edit_task);
+               holder.deleteTask = (Button) convertView.findViewById(R.id.delete_task);
+               holder.deleteTask.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                       dialog.setTitle("Eliminar Tarea");
+                       dialog.setMessage("¿Seguro deseas eliminar esta Tarea?");
+                       dialog.setNegativeButton("Cancelar", null);
+                       dialog.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                               context.onDeleteTask(position);
+                           }
+                       });
+
+                       dialog.show();
+                   }
+               });
 
                convertView.setTag(holder);
            }else{
@@ -85,16 +106,16 @@ public class CustomAdapterEditTask extends BaseAdapter {
         holder.task.setText(task.get(position).getTitle());
 
         if(task.get(position).getNew()){
-            holder.checkBox.setVisibility(View.INVISIBLE);
             holder.task.setHint("New Task");
-        }else{
+        }
+
             if(task.get(position).getStatus().equals("completed")){
                 holder.checkBox.setChecked(true);
                 holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }else{
                 holder.checkBox.setChecked(false);
                 holder.task.setPaintFlags(0);
-            }
+
         }
 
 
@@ -105,6 +126,7 @@ public class CustomAdapterEditTask extends BaseAdapter {
     public class Holder{
         CheckBox checkBox;
         TextView task;
+        Button deleteTask;
     }
 
 }

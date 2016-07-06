@@ -59,13 +59,14 @@ public class CustomAdapterTask extends BaseAdapter {
             holder = new Holder();
             convertView = inflater.inflate(R.layout.lists_task,null);
             holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
+
             holder.task = (TextView) convertView.findViewById(R.id.task);
 
         convertView.setTag(holder);
         }else{
             holder = (Holder) convertView.getTag();
         }
-
+        holder.checkBox.setClickable(false);
         holder.task.setText(task.get(position).getTitle());
 
        if(task.get(position).getStatus().equals("completed")){

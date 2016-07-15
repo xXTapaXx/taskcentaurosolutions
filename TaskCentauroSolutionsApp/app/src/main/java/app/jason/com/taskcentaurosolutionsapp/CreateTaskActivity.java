@@ -24,6 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.datetimepicker.date.DatePickerDialog;
+import com.android.datetimepicker.time.RadialPickerLayout;
+import com.android.datetimepicker.time.TimePickerDialog;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,10 +39,14 @@ import com.google.gson.reflect.TypeToken;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import Adapters.CustomAdapterEditTask;
 import Adapters.RecyclerAdapterEditTask;
@@ -52,11 +59,11 @@ import views.SharedView;
 import views.TaskListView;
 import views.TaskView;
 
-public class CreateTaskActivity extends AppCompatActivity implements Response.Listener<String>, Response.ErrorListener{
+public class CreateTaskActivity extends AppCompatActivity implements Response.Listener<String>, Response.ErrorListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
     //Shared Preference
     SharedPreferences userDetails;
-    String fecha;
+    String date;
     List<TaskView> listTaskView;
     TaskListView taskListView;
     String idList = null;
@@ -84,10 +91,21 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
     //Scopes
     private static final String[] SCOPES = { TasksScopes.TASKS_READONLY, TasksScopes.TASKS };
 
+    private Calendar calendar;
+    private DateFormat dateFormat;
+    private SimpleDateFormat timeFormat;
+    private static final String TIME_PATTERN = "HH:mm:ss";
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
+
+        //Date
+        calendar = Calendar.getInstance();
+        //dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        dateFormat = new SimpleDateFormat(DATE_PATTERN,Locale.getDefault());
+        timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
 
         //Inicializamos el shared Preference
         userDetails = getSharedPreferences("userdetails", MODE_PRIVATE);
@@ -164,10 +182,12 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
         String myEmail = userDetails.getString(PREF_ACCOUNT_NAME, null);
         TaskListView result = null;
         List<TaskView> taskViewListShared = new ArrayList<>();
-        for(TaskView task : taskListView.getTasks()){
-            taskViewListShared.add(task);
+        if(taskListViewResult.getTasks().size() > 0){
+            for(TaskView task : taskListView.getTasks()){
+                taskViewListShared.add(task);
+            }
         }
-            result = new TaskListView(taskListViewResult.getId(),taskListViewResult.getTitle(),taskViewListShared,fecha);
+            result = new TaskListView(taskListViewResult.getId(),taskListViewResult.getTitle(),taskViewListShared,date);
             sharedView = new SharedView(myEmail,null,result);
             //onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 
@@ -189,35 +209,27 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
     }
 
     public void onSelectDate(){
-        String Fecha;
-        CalendarView calendar = new CalendarView(this);
-
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                                            int dayOfMonth) {
-                // TODO Auto-generated method stub
-               // initScheduleEvent();
-
-                fecha = year + "/" + month + "/" + dayOfMonth;
-            }
-        });
-        new AlertDialog.Builder(CreateTaskActivity.this)
-                .setTitle("Selecciona una Fecha")
-                .setView(calendar)
+      new AlertDialog.Builder(CreateTaskActivity.this)
+                .setTitle("Fecha")
+                .setMessage("Desea Seleccionar una Fecha de Caducidad?")
                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        //do nothing...yet
-                        onSaveTasks();
-                    }
+                        onShowDatePicker();
+                          }
                 }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        fecha = "";
                         onSaveTasks();
                     }
                 }
         ).show();
+    }
+
+    public void onShowDatePicker(){
+        DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), "datePicker");
+    }
+
+    public void onShowTimePicker(){
+        TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show(getFragmentManager(), "timePicker");
     }
 
     @Override
@@ -271,7 +283,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
        // }
 
 
-        taskListView = new TaskListView(idList,textViewTitleTask.getText().toString(),listTaskView,fecha);
+        taskListView = new TaskListView(idList,textViewTitleTask.getText().toString(),listTaskView,date);
 
         String accountName = userDetails.getString(PREF_ACCOUNT_NAME, null);
         //String accountName = null;
@@ -335,7 +347,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
             List<TaskView> taskViewListShared = new ArrayList<>();
             taskViewListShared.add(listTaskView.get(position));
             if(taskListView != null){
-                result = new TaskListView(taskListView.getId(),taskListView.getTitle(),taskViewListShared,fecha);
+                result = new TaskListView(taskListView.getId(),taskListView.getTitle(),taskViewListShared,date);
                 sharedView = new SharedView(myEmail,null,result);
                 //onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 
@@ -383,5 +395,20 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
        /* } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }*/
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
+        calendar.set(year, monthOfYear, dayOfMonth);
+        date = dateFormat.format(calendar.getTime());
+        onShowTimePicker();
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+         date += " " + timeFormat.format(calendar.getTime());
+        onSaveTasks();
     }
 }

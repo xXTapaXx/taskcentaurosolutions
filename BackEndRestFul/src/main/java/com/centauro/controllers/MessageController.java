@@ -1,41 +1,97 @@
 package com.centauro.controllers;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.omg.CORBA.portable.InputStream;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.centauro.exception.ShopNotFound;
-import com.centauro.model.ListModel;
-import com.centauro.model.SharedModel;
-import com.centauro.model.TaskModel;
-import com.centauro.service.ListService;
-import com.centauro.service.SharedService;
-import com.centauro.service.TaskService;
-import com.centauro.view.ListModelView;
-import com.centauro.view.SharedModelView;
-import com.centauro.view.SharedView;
-import com.centauro.view.TaskListView;
-import com.centauro.view.TaskModelView;
-import com.centauro.view.TaskView;
-import com.google.api.services.tasks.model.Task;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.centauro.model.CalendarModel;
+import com.centauro.model.UserModel;
+import com.centauro.service.CalendarService;
+import com.centauro.service.UserService;
 
 @RestController
 public class MessageController {
+	
+	@Autowired
+	private CalendarService calendarService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping("/message")
+    public void Message(String token) throws IOException {
+		String url="https://fcm.googleapis.com/fcm/send";
+		URL object=new URL(url);
+
+		HttpURLConnection con = (HttpURLConnection) object.openConnection();
+		con.setDoOutput(true);
+		con.setDoInput(true);
+		con.setRequestProperty("Content-Type", "application/json");
+		con.setRequestProperty("Accept", "application/json");
+		//con.setRequestProperty("Authorization", "key=AIzaSyAnZJjGNCIx6h0wU9H5nYBDtFMa8L3bmR8");
+		con.setRequestProperty("Authorization", "key=AIzaSyBhsCo3AiV4PF5KwM9Pli678fcsg6RbzfY");
+		con.setRequestMethod("POST");
+
+		JSONObject data   = new JSONObject();
+		JSONObject request = new JSONObject();
+		
+		data.put("title","Notificar");
+		data.put("body", "Prueba de Noficicaion");
+		data.put("icon", "myicon");
+		data.put("sound","R.drawable.ic_stat_ic_notification");
+		
+		request.put("to", token);
+		request.put("notification", data);
+		
+
+		OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+		wr.write(request.toString());
+		wr.flush();
+
+		//display what returns the POST request
+
+		StringBuilder sb = new StringBuilder();  
+		int HttpResult = con.getResponseCode(); 
+		if (HttpResult == HttpURLConnection.HTTP_OK) {
+		    BufferedReader br = new BufferedReader(
+		            new InputStreamReader(con.getInputStream(), "utf-8"));
+		    String line = null;  
+		    while ((line = br.readLine()) != null) {  
+		        sb.append(line + "\n");  
+		    }
+		    br.close();
+		    System.out.println("" + sb.toString());  
+		} else {
+		    System.out.println(con.getResponseMessage());  
+		}  
+	}
+	
+	@RequestMapping("/haveNotification")
+    public List<CalendarModel> Notification() {
+		Timestamp maxDate = new Timestamp(System.currentTimeMillis()+60*60*1000);
+		List<CalendarModel> calendar = calendarService.getAllNotification(maxDate);
+		
+		List<UserModel> users = userService.findByEmail(calendar.get(0).getUser_id().getEmail());
+		
+		try {
+			Message(users.get(1).getToken());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 return calendar;
+		
+	}
 	
 	
 }

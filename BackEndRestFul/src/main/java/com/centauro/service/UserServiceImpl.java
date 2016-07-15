@@ -12,16 +12,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.centauro.exception.ShopNotFound;
+import com.centauro.model.TaskModel;
 import com.centauro.model.UserModel;
+import com.centauro.repository.TaskRepository;
 import com.centauro.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
+	@Resource
+	private UserRepository userRepository;
 
 	@Override
-	public UserModel create(UserModel user) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public UserModel create(UserModel userModel) {
+		UserModel createdUser = userModel;
+		return userRepository.save(createdUser);
 	}
 
 	@Override
@@ -49,10 +55,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserModel existUserByEmail(String email) {
+	public UserModel existUserByToken(String token) {
 		// TODO Auto-generated method stub
-		return null;
+		return userRepository.existUserByToken(token);
 	}
-	
-	
+
+	@Override
+	public List<UserModel> findByEmail(String email) {
+		// TODO Auto-generated method stub
+		return userRepository.findByEmail(email);
+	}
+
+
 }

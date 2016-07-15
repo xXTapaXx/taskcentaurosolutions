@@ -1,5 +1,7 @@
 package com.centauro.init;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -20,6 +22,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+
 @EnableTransactionManagement
 @ComponentScan("com.centauro")
 @PropertySource("classpath:application.properties")
@@ -29,6 +34,8 @@ public class RestFulApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RestFulApplication.class, args);
+		
+		
 	}
 
 	/*@Override

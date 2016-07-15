@@ -15,6 +15,11 @@ import javax.persistence.Table;
 @Table(name = "shared")
 public class SharedModel implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5124381968199498327L;
+
 	@Id
 	private String email;
 	

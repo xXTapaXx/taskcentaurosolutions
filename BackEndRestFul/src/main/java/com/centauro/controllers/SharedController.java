@@ -1,7 +1,11 @@
 package com.centauro.controllers;
 
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,18 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.centauro.exception.ShopNotFound;
+import com.centauro.model.CalendarModel;
 import com.centauro.model.ListModel;
 import com.centauro.model.SharedModel;
 import com.centauro.model.TaskModel;
+import com.centauro.model.UserModel;
+import com.centauro.service.CalendarService;
 import com.centauro.service.ListService;
 import com.centauro.service.SharedService;
 import com.centauro.service.TaskService;
+import com.centauro.service.UserService;
 import com.centauro.view.ListModelView;
 import com.centauro.view.SharedModelView;
 import com.centauro.view.SharedView;
 import com.centauro.view.TaskListView;
 import com.centauro.view.TaskModelView;
-import com.centauro.view.TaskView;
 import com.google.api.services.tasks.model.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -40,6 +47,11 @@ public class SharedController {
 	@Autowired
 	private TaskService taskService;
 	
+	@Autowired
+	private CalendarService calendarService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping("/insertShared") 
     public String insertShared(HttpServletRequest request) {
@@ -317,6 +329,36 @@ public class SharedController {
     		listModelResult = createSharedList(sharedModel.get(0),taskListView);
     		updateOrCreateTask(taskListView,sharedView,listModelResult);
     	} 
+    	
+    	if(sharedView.getTaskListView().getDate() != null && !sharedView.getTaskListView().getDate().isEmpty()){
+    		
+    		CalendarModel existCalendar = calendarService.existCalendarByList(sharedView.getTaskListView().getId());
+    		
+		    if(existCalendar == null){
+		    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			    Date parsedDate = null;
+				try {
+					parsedDate = dateFormat.parse(sharedView.getTaskListView().getDate());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+	    		
+			    List<UserModel> user = userService.findByEmail(sharedView.getMyEmail());	
+			    
+	    		CalendarModel calendarModel = new CalendarModel();
+	    		calendarModel.setUser_id(user.get(0));
+	    		calendarModel.setList(sharedView.getTaskListView().getId());
+	    		calendarModel.setDate(timestamp);
+	    		
+	    		calendarService.create(calendarModel);
+	    		
+	    			
+	    		
+		    }
+    		
+    	}
     	
     	return response;
     }

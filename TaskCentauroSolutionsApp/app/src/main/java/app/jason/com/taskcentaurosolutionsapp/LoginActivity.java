@@ -1,15 +1,14 @@
 package app.jason.com.taskcentaurosolutionsapp;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
@@ -23,9 +22,10 @@ import com.google.api.services.tasks.TasksScopes;
 
 
 import com.google.api.services.tasks.model.*;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.reflect.TypeToken;
 
 import android.Manifest;
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
@@ -38,23 +38,23 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import controllers.ServiceController;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import utils.HelperTask;
+import views.SharedModelView;
 
 public class LoginActivity extends Activity
         implements EasyPermissions.PermissionCallbacks {
@@ -290,9 +290,10 @@ public class LoginActivity extends Activity
      * An asynchronous task that handles the Google Tasks API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> implements Response.Listener<String>, Response.ErrorListener {
         private com.google.api.services.tasks.Tasks mService = null;
         private Exception mLastError = null;
+        private ServiceController serviceController = new ServiceController();
 
         public MakeRequestTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -355,10 +356,17 @@ public class LoginActivity extends Activity
                 Toast.makeText(getApplicationContext(),"No results returned.",Toast.LENGTH_LONG).show();
             } else {
 
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
+                String email = settings.getString(PREF_ACCOUNT_NAME,null);
+                String token = FirebaseInstanceId.getInstance().getToken();
 
-                Toast.makeText(getApplicationContext(),"Bienvenido..." ,Toast.LENGTH_LONG).show();
+                try {
+                    // serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.GET, null, this, this);
+                    //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
+
+                    serviceController.stringRequest(getString(R.string.api_url)+"/registerUser?email="+ URLEncoder.encode(email,"UTF-8") + "&token="+ URLEncoder.encode(token,"UTF-8"), Request.Method.POST, null, this, this);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -381,6 +389,21 @@ public class LoginActivity extends Activity
             } else {
                 Toast.makeText(getApplicationContext(),"Request cancelled.",Toast.LENGTH_LONG).show();
             }
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onResponse(String response) {
+
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+
+                    Toast.makeText(getApplicationContext(),"Bienvenido..." ,Toast.LENGTH_LONG).show();
+
         }
     }
 

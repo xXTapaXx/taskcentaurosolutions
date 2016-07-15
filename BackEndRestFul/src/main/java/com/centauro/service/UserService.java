@@ -13,6 +13,7 @@ public interface UserService {
 	public List<UserModel> findAll();
 	public UserModel update(UserModel user) throws ShopNotFound;
 	public UserModel findById(int id);
-	public UserModel existUserByEmail(String email);
+	public UserModel existUserByToken(String token);
+	public List<UserModel> findByEmail(String email);
 	
 }

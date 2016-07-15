@@ -141,6 +141,7 @@ public class HelperInsertOrUpdateTask extends AsyncTask<Void, Void, String> {
         context.mProgress.hide();
         if (output == null || output.isEmpty()) {
             Toast.makeText(context,"No se Agrego la Tarea",Toast.LENGTH_LONG).show();
+            context.onFinishActivity();
 
         } else {
             Toast.makeText(context,"Se Agrego y/o actualizó la tarea",Toast.LENGTH_LONG).show();

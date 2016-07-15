@@ -2,7 +2,6 @@ package com.centauro.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +10,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tasks")
 public class TaskModel implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -770967247547799670L;
 
 	@Id
 	@GeneratedValue

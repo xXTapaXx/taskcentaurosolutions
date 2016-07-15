@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.centauro.model.UserModel;
 import com.centauro.service.UserService;
@@ -17,20 +19,24 @@ import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskLists;
 import com.google.gson.Gson;
 
+@RestController
 public class UserController {
 
     @Autowired
 	private UserService userService;
     
-    @RequestMapping("/saveUser")
-    public void saveUser(HttpServletRequest request) {
+   // @RequestMapping("/registerUser")
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
+    public void registerUser(HttpServletRequest request) {
     	String email = request.getParameter("email");
-    	UserModel userModel = userService.existUserByEmail(email);
+    	String token = request.getParameter("token");
+    	UserModel userModel = userService.existUserByToken(token);
     	
     	if(userModel == null){
     		UserModel user = new UserModel();
     		user.setEmail(email);
+    		user.setToken(token);
     		userService.create(user);
-    	}   
+    	}
     }	
 }

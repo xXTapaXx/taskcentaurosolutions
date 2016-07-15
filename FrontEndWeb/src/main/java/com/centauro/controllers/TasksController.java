@@ -1,5 +1,6 @@
 package com.centauro.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,17 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class TasksController {
+	
+	@RequestMapping("/login")
+    public void Login() {
+		 try {
+			TasksQuickstart.getTasksService();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	@RequestMapping("/taskslists")
     public String allTasksLists(Model model) {

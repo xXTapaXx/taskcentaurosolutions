@@ -81,13 +81,15 @@ public class MessageController {
 		Timestamp maxDate = new Timestamp(System.currentTimeMillis()+60*60*1000);
 		List<CalendarModel> calendar = calendarService.getAllNotification(maxDate);
 		
-		List<UserModel> users = userService.findByEmail(calendar.get(0).getUser_id().getEmail());
-		
-		try {
-			Message(users.get(1).getToken());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(calendar.size() > 0){
+			List<UserModel> users = userService.findByEmail(calendar.get(0).getUser_id().getEmail());
+			
+			try {
+				Message(users.get(1).getToken());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		 return calendar;
 		

@@ -29,22 +29,30 @@ jQuery(document).ready(function () {
 								"</label>" +
 							"</div>" +
 				      	"</div>" +
-						"<div class='col-lg-11 col-md-11 col-xs-11'>" +
+						"<div class='col-lg-10 col-md-10 col-xs-10'>" +
 				      		"<input type='text' name='task' class='form-control'  placeholder='Tarea'></input>" +
 				      	"</div>" +
+				      	"<div class='col-md-1 col-sm-1 col-xs-1 pull-right'>"+
+						  	"<a href='javascript:void(0)'><i class='material-icons'>delete</i></a>"+
+                        "</div> "+
 				     "</div>";	
 	        jQuery(".addTask").append(task);
 	        
 	});
 	
 	jQuery("a[data-title=openModel]").click(function (){
+		jQuery("#titleTask").val("");
+		jQuery(".addTask").empty();
 		jQuery("#idListTask").val("");
 	});
 	
-	jQuery("a[data-title=taskListEdit]").click(function () {
+	jQuery("h4[data-title=taskListEdit]").click(function () {
+		jQuery("#titleTask").val("");
+		jQuery(".addTask").empty();
+		jQuery("#idListTask").val("");
 		jQuery.ajax({
 	        type: "GET",
-	        url: "http://localhost:8081/getTaskList/" + this.id,
+	        url: "http://localhost:8080/getTaskList/" + this.id,
 	        //data: {id:this.id},
 	    })
 	     .done(function( data, textStatus, jqXHR ) {
@@ -64,9 +72,12 @@ jQuery(document).ready(function () {
         					"</label>" +
         				"</div>" +
                   	"</div>" +
-        			"<div class='col-lg-11 col-md-11 col-xs-11'>" +
+        			"<div class='col-lg-10 col-md-10 col-xs-10'>" +
                   		"<input type='text' class='form-control completed' onInput=\"updateTask(\'"+id+"\',\'"+data[0].items[i].id+"\');\" id='"+data[0].items[i].id+"' value='"+data[0].items[i].title+"' ></input>" +
                   	"</div>" +
+                  	"<div class='col-md-1 col-sm-1 col-xs-1 pull-right'>"+
+					  	"<a href='javascript:void(0)'><i class='material-icons'>delete</i></a>"+
+	                "</div> "+
                  "</div>";
 				}else{
 					task += "<div class='col-lg-12 col-md-12 col-xs-12'>" +
@@ -78,9 +89,12 @@ jQuery(document).ready(function () {
         					"</label>" +
         				"</div>" +
                   	"</div>" +
-        			"<div class='col-lg-11 col-md-11 col-xs-11'>" +
+        			"<div class='col-lg-10 col-md-10 col-xs-10'>" +
                   		"<input type='text' class='form-control' onInput=\"updateTask(\'"+id+"\',\'"+data[0].items[i].id+"\');\" id='"+data[0].items[i].id+"' value='"+data[0].items[i].title+"'></input>" +
                   	"</div>" +
+                  	"<div class='col-md-1 col-sm-1 col-xs-1 pull-right'>"+
+					  	"<a href='javascript:void(0)'><i class='material-icons'>delete</i></a>"+
+	                "</div> "+
                  "</div>";
 				}
 	        	
@@ -111,7 +125,7 @@ function changeStatus(listIdParam,idParam,statusParam){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://localhost:8081/updateTaskStatus",
+        url: "http://localhost:8080/updateTaskStatus",
         data: {id: idParam, listId: listIdParam, status: statusParam},
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -138,7 +152,7 @@ function updateTask(listIdParam,taskIdParam){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://localhost:8081/updateTask",
+        url: "http://localhost:8080/updateTask",
         data: {id: taskIdParam, listId: listIdParam, title: titleParam},
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -156,7 +170,7 @@ function updateTaskList(listIdParam){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://localhost:8081/updateTasksList",
+        url: "http://localhost:8080/updateTasksList",
         data: {id: listIdParam, title: titleParam},
     })
      .done(function( data, textStatus, jqXHR ) {

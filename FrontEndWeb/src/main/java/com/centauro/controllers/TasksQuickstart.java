@@ -1,5 +1,6 @@
 package com.centauro.controllers;
 
+import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -15,14 +16,18 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.*;
 import com.google.api.services.tasks.Tasks;
 
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
 public class TasksQuickstart {
-    /** Application name. */
+
+	/** Application name. */
     private static final String APPLICATION_NAME =
         "Google Tasks API Java Quickstart";
 
@@ -39,6 +44,8 @@ public class TasksQuickstart {
 
     /** Global instance of the HTTP transport. */
     private static HttpTransport HTTP_TRANSPORT;
+    
+    public static AuthorizationCodeInstalledApp authorizationCodeInstalledApp;
 
     /** Global instance of the scopes required by this quickstart.
      *
@@ -78,8 +85,32 @@ public class TasksQuickstart {
                 .setAccessType("offline")
                 //.setAccessType("online")
                 .build();
-        Credential credential = new AuthorizationCodeInstalledApp(
-            flow, new LocalServerReceiver()).authorize("user");
+        authorizationCodeInstalledApp =  new AuthorizationCodeInstalledApp(
+                flow, new LocalServerReceiver());
+        Credential credential = authorizationCodeInstalledApp.authorize("user");
+        /*String redirectUri = authorizationCodeInstalledApp.getReceiver().getRedirectUri();
+        AuthorizationCodeRequestUrl authorizationUrl =
+        		authorizationCodeInstalledApp.getFlow().newAuthorizationUrl().setRedirectUri(redirectUri);
+        
+        if(Desktop.isDesktopSupported()){
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(redirectUri));
+            } catch (IOException | URISyntaxException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }else{
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec("xdg-open " + redirectUri);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        System.out.println(authorizationUrl.build());*/
        /* System.out.println(
                 "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());*/
         return credential;
@@ -97,28 +128,4 @@ public class TasksQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
-
-    public static void main(String[] args) throws IOException {
-        // Build a new authorized API client service.
-        Tasks service = getTasksService();
-
-        // Print the first 10 task lists.
-       /* TaskLists result = service.tasklists().list()
-             .setMaxResults(Long.valueOf(10))
-             .execute();
-        List<TaskList> tasklists = result.getItems();
-        if (tasklists == null || tasklists.size() == 0) {
-            System.out.println("No task lists found.");
-        } else {
-            System.out.println("Task lists:");
-            for (TaskList tasklist : tasklists) {
-                System.out.printf("%s (%s)\n",
-                        tasklist.getTitle(),
-                        tasklist.getId());
-            }
-        }*/
-    }
-    
-    
-
 }

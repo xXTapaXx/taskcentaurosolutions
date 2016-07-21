@@ -9,75 +9,95 @@
     				<div class="col-md-12 padding-0 taskCollapse">
     				
     				<div class="col-lg-4 col-md-4 col-xs-4" style="padding:0;">
-    					 <a href="javascript:void(0)"  data-toggle="modal" data-target="#complete-dialog" class="taskListLeft" data-title="taskListEdit" th:each="tasksList : ${listLeft}" th:id="${tasksList.id}">
-                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10  taskListsPadding"  >
+    				
+    					
+                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10  taskListsPadding taskListLeft" th:each="tasksList : ${listLeft}" >
                                     
                                     <div class="panel box-v1">
                                         <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
-                                          <h4 class="text-left" th:text="${tasksList.title}"></h4>
+	                                        <div class="col-md-9 col-sm-9 col-xs-12 pull-left">
+	                                        <h4 data-toggle="modal" data-target="#complete-dialog" class="text-left" data-title="taskListEdit" th:id="${tasksList.id}" th:text="${tasksList.title}" style="cursor: pointer;"></h4>
+	                                        </div>
+	                                        
+	                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" style="padding: 10px 0 0 30px;">
+	                                        	<a href="javascript:void(0)" data-toggle="modal" data-target="#sharedModal"><i class="material-icons">share</i></a>
+	    									 	<a href="javascript:void(0)"><i class="material-icons" data-toggle="modal" data-target="#delete">delete</i></a>
+	                                        </div>                                                         
                                         </div>
                                                                          
                                       <div class="panel-body text-center">
 	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
-							                <label th:if="${task.status} == 'completed'">
-							                  <input type="checkbox"  checked="checked" /><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
+							                <label th:if="${task.status} == 'completed'" style="cursor: context-menu;">
+							                  <input type="checkbox"  checked="checked" disabled="disabled"/><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
 							                </label>
-							                <label th:unless="${task.status} == 'completed'">
-							                  <input type="checkbox"   /><span class="check"></span> <span th:text="${task.title}"></span>			                  
+							                <label th:unless="${task.status} == 'completed'" style="cursor: context-menu;">
+							                  <input type="checkbox"   disabled="disabled"/><span class="check"></span> <span th:text="${task.title}"></span>			                  
 							                </label>
 							              </div>                                                                                                        
                                       </div>
                                     </div>
                                 </div>
-                                </a>
+                                
     				</div>
     				
     				<div class="col-lg-4 col-md-4 col-xs-4" style="padding:0;">
-    					 <a href="javascript:void(0)"  data-toggle="modal" data-target="#complete-dialog"  class="taskListCenter" data-title="taskListEdit" th:each="tasksList : ${listCenter}" th:id="${tasksList.id}">
-                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10 taskListsPadding"  >
+    					       <div class="col-md-12 col-lg-12 col-xs-12 padding-10 taskListsPadding taskListCenter"  th:each="tasksList : ${listCenter}">
                                     
                                     <div class="panel box-v1">
                                         <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
-                                          <h4 class="text-left" th:text="${tasksList.title}"></h4>
+                                          <div class="col-md-9 col-sm-9 col-xs-12 pull-left">
+                                        <h4 data-toggle="modal" data-target="#complete-dialog"  class="text-left" data-title="taskListEdit"  th:id="${tasksList.id}" th:text="${tasksList.title}" style="cursor:pointer;"></h4>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" style="padding: 10px 0 0 30px;">
+                                        	<a href="javascript:void(0)" data-toggle="modal" data-target="#sharedModal"><i class="material-icons">share</i></a>
+	    									 <a href="javascript:void(0)"><i class="material-icons" data-toggle="modal" data-target="#delete">delete</i></a>
+                                        </div>
                                         </div>
                                                                          
                                       <div class="panel-body text-center">
 	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
-							                <label th:if="${task.status} == 'completed'">
-							                  <input type="checkbox"  checked="checked" /><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
+							                <label th:if="${task.status} == 'completed'" style="cursor: context-menu;">
+							                  <input type="checkbox"  checked="checked" disabled="disabled"/><span class="check"></span> <span th:text="${task.title}"  style="text-decoration:line-through;"></span>			                  
 							                </label>
-							                <label th:unless="${task.status} == 'completed'">
-							                  <input type="checkbox"   /><span class="check"></span> <span th:text="${task.title}"></span>			                  
+							                <label th:unless="${task.status} == 'completed'" style="cursor: context-menu;">
+							                  <input type="checkbox"   disabled="disabled"/><span class="check"></span> <span th:text="${task.title}"></span>			                  
 							                </label>
 							              </div>                                                                                                        
                                       </div>
                                     </div>
                                 </div>
-                                </a>
+                                
     				</div>
     				
     				<div class="col-lg-4 col-md-4 col-xs-4" style="padding:0;">
-    					 <a href="javascript:void(0)"  data-toggle="modal" data-target="#complete-dialog"  class="taskListRight" data-title="taskListEdit" th:each="tasksList : ${listRight}" th:id="${tasksList.id}">
-                                <div class="col-md-12 col-lg-12 col-xs-12 padding-10 taskListsPadding"  >
+    					      <div class="col-md-12 col-lg-12 col-xs-12 padding-10 taskListsPadding taskListRight"  th:each="tasksList : ${listRight}">
                                     
                                     <div class="panel box-v1">
                                         <div class="col-md-12 col-sm-12 col-xs-12 text-left padding-0">
-                                          <h4 th:class="|text-left ${tasksList.id}|" th:text="${tasksList.title}"></h4>
+                                          <div class="col-md-9 col-sm-9 col-xs-12 pull-left">
+                                        <h4 data-toggle="modal" data-target="#complete-dialog"  class="text-left" data-title="taskListEdit"  th:id="${tasksList.id}" th:text="${tasksList.title}" style="cursor:pointer;"></h4>
+                                        </div>
+                                        
+                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" style="padding: 10px 0 0 30px;">
+                                        	<a href="javascript:void(0)" data-toggle="modal" data-target="#sharedModal"><i class="material-icons">share</i></a>
+	    									<a href="javascript:void(0)"><i class="material-icons" data-toggle="modal" data-target="#delete">delete</i></a>
+                                        </div>
                                         </div>
                                                                          
                                       <div class="panel-body text-center">
 	                                      <div class="checkbox text-left"  th:each="task : ${tasksList.tasks}">
-							                <label th:if="${task.status} == 'completed'">
-							                  <input type="checkbox"  th:class="|${task.id}|" checked="checked" /><span class="check"></span> <span th:class="|${task.id} completed|" th:text="${task.title}"></span>			                  
+							                <label th:if="${task.status} == 'completed'" style="cursor: context-menu;">
+							                  <input type="checkbox"  th:class="|${task.id}|" checked="checked" disabled="disabled"/><span class="check"></span> <span th:class="|${task.id} completed|" th:text="${task.title}"></span>			                  
 							                </label>
-							                <label th:unless="${task.status} == 'completed'">
-							                  <input type="checkbox"   th:class="|${task.id}|" /><span class="check"></span> <span th:class="${task.id}" th:text="${task.title}"></span>			                  
+							                <label th:unless="${task.status} == 'completed'" style="cursor: context-menu;">
+							                  <input type="checkbox"   th:class="|${task.id}|" disabled="disabled"/><span class="check"></span> <span th:class="${task.id}" th:text="${task.title}"></span>			                  
 							                </label>
 							              </div>                                                                                                        
                                       </div>
                                     </div>
                                 </div>
-                                </a>
+                                
     				</div>
                                 
                                

@@ -11,3 +11,9 @@
 .completed{
 	text-decoration:line-through;
 }
+
+.panel-body{
+	min-height: 50px;
+    max-height: 300px;
+    overflow: hidden;
+}

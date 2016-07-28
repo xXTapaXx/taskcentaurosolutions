@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.centauro</groupId>
-	<artifactId>backEndRestFul</artifactId>
+	<groupId>com.centaurosolutions</groupId>
+	<artifactId>backendRestFul</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -47,9 +47,9 @@
 		</dependency>
 		
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+            		<groupId>org.springframework.boot</groupId>
+            		<artifactId>spring-boot-starter-web</artifactId>
+        	</dependency>
 									
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -65,12 +65,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -162,6 +162,11 @@
   <artifactId>firebase-server-sdk</artifactId>
   <version>3.0.0</version>
 </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -169,9 +174,20 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				 <configuration>
+					<mainClass>com.centauro.init.ServletInitializer</mainClass>
+				  </configuration>
+				  <executions>
+					<execution>
+					    <goals>
+						<goal>repackage</goal>
+					    </goals>
+					</execution>
+				   </executions>				
 			</plugin>
 		</plugins>
-	</build>
+	</build> 
+	
 	
 
 </project>

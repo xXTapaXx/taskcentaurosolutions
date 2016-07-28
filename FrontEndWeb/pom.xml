@@ -37,6 +37,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.6.2</version>
+		</dependency>
+		
 		<!-- dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -52,7 +58,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
 <dependency>
     <groupId>com.google.api-client</groupId>
@@ -80,25 +86,17 @@
     <version>v1-rev15-1.15.0-rc</version>
 </dependency>
 
-<!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-google -->
-<dependency>
-    <groupId>org.springframework.social</groupId>
-    <artifactId>spring-social-google</artifactId>
-    <version>1.0.0.RC1</version>
-</dependency>
 
-<dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.0.7.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-security</artifactId>
-            <version>1.0.2.RELEASE</version>
-        </dependency>
-
-		
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-cypher-compiler-2.2</artifactId>
+			<version>2.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-core</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 	
 	<build>

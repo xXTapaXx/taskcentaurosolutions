@@ -8,8 +8,9 @@ public class TaskListView {
 	
 	public String id = null;
 	public String title = null;
-	public List<Task> tasks = null;
+	public List<TaskView> tasks = null;
 	public String date = null;
+	
 	public String getTitle() {
 		return title;
 	}
@@ -22,10 +23,10 @@ public class TaskListView {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public List<Task> getItems() {
+	public List<TaskView> getItems() {
 		return tasks;
 	}
-	public void setTasks(List<Task> tasks) {
+	public void setTasks(List<TaskView> tasks) {
 		this.tasks = tasks;
 	}
 	public String getDate() {
@@ -34,7 +35,7 @@ public class TaskListView {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public List<Task> getTasks() {
+	public List<TaskView> getTasks() {
 		return tasks;
 	}
 		

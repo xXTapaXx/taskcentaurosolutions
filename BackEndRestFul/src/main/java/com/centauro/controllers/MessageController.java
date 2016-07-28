@@ -77,21 +77,24 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/haveNotification")
-    public List<CalendarModel> Notification() {
+    public String Notification() {
+		String response = "No hay notificaciones pendientes";
 		Timestamp maxDate = new Timestamp(System.currentTimeMillis()+60*60*1000);
-		List<CalendarModel> calendar = calendarService.getAllNotification(maxDate);
-		
-		if(calendar.size() > 0){
-			List<UserModel> users = userService.findByEmail(calendar.get(0).getUser_id().getEmail());
-			
-			try {
-				Message(users.get(1).getToken());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		List<CalendarModel> calendars = calendarService.getAllNotification(maxDate);
+		//List<CalendarModel> calendar = calendarService.findAll();
+		for(CalendarModel calendar : calendars){
+				List<UserModel> users = userService.findByEmail(calendar.getUser_id().getEmail());
+				for(UserModel user : users){
+					try {
+						Message(user.getToken());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				response = "Se notifico correctamente";
 		}
-		 return calendar;
+		 return response;
 		
 	}
 	

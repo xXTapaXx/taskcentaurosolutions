@@ -36,5 +36,11 @@ public class CalendarServiceImpl implements CalendarService {
 		// TODO Auto-generated method stub
 		return calendarRepository.getAllNotification(maxDate);
 	}
+
+	@Override
+	public List<CalendarModel> findAll() {
+		// TODO Auto-generated method stub
+		return calendarRepository.findAll();
+	}
 	
 }

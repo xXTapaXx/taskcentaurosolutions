@@ -25,6 +25,7 @@ import com.centauro.service.SharedService;
 import com.centauro.service.TaskService;
 import com.centauro.view.SharedView;
 import com.centauro.view.TaskListView;
+import com.centauro.view.TaskView;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.Tasks;
@@ -61,8 +62,8 @@ public class TasksController {
     public TaskLists getTasksLists(HttpServletRequest request) {
     	new HashMap<String, String>();
     	List<TaskListView> response = new LinkedList<TaskListView>();
-    	List<Task> arraylistResult = null ;
-	    TaskListView taskView = null;
+    	List<TaskView> arraylistResult = null ;
+	    TaskListView taskListView = null;
     	TaskLists result = null;
     	try {
 			Tasks service = TasksQuickstart.getTasksService();
@@ -78,22 +79,28 @@ public class TasksController {
 				 }*/
 				 
 				 com.google.api.services.tasks.model.Tasks tasks = service.tasks().list(tasklist.getId()).execute();
-				 arraylistResult = new ArrayList<Task>();
-				 taskView = new TaskListView();
-				 taskView.setId(tasklist.getId());
-				 taskView.setTitle(tasklist.getTitle());
+				 arraylistResult = new ArrayList<TaskView>();
+				 taskListView = new TaskListView();
+				 taskListView.setId(tasklist.getId());
+				 taskListView.setTitle(tasklist.getTitle());
 				if(tasks.getItems() != null)
         	   		{
 					
 					 
-				 for (Task task : tasks.getItems()) {
-					
-					 arraylistResult.add(task);
+					 for (Task task : tasks.getItems()) {
+						 	TaskView taskView = new TaskView();
+							taskView.setId(task.getId());
+							taskView.setTitle(task.getTitle());
+							taskView.setStatus(task.getStatus());
+							taskView.setIsNew(false);
+							
+						 arraylistResult.add(taskView);
+				            }
 			            }
-		            }
-				 
-				taskView.setTasks(arraylistResult);
-				 response.add(taskView);
+					 
+					taskListView.setTasks(arraylistResult);
+					 response.add(taskListView);
+				 	
 			 	}
 			 
 		} catch (IOException e) {
@@ -148,7 +155,7 @@ public class TasksController {
 				taskList.setTitle(taskView.getTitle());		
 				ListTasks = service.tasklists().insert(taskList).execute();		
 			}	 
-					 for (Task task : taskView.getItems()) {
+					 for (TaskView task : taskView.getItems()) {
 						
 						 	if(task.getId() != null){
 						 		
@@ -156,7 +163,7 @@ public class TasksController {
 						 		resultTask = service.tasks().get(taskView.getId(),task.getId()).execute();
 						 		resultTask.setTitle(task.getTitle());
 								resultTask.setStatus(task.getStatus());
-								 service.tasks().update(taskView.getId(), task.getId(), task).execute();
+								 service.tasks().update(taskView.getId(), task.getId(), resultTask).execute();
 								 
 						 		}else{
 						 			Task insertTask = new Task();
@@ -204,8 +211,8 @@ public class TasksController {
     public List<?> getTaskLists(@PathVariable(value="id") String id) {
     	
     	List<TaskListView> response = new ArrayList<TaskListView>();
-    	List<Task> arraylistResult = null ;
-	    TaskListView taskView = null;
+    	List<TaskView> arraylistResult = null ;
+	    TaskListView taskListView = null;
 	    TaskList tasksList = null;
     	try {
 			Tasks service = TasksQuickstart.getTasksService();
@@ -213,22 +220,27 @@ public class TasksController {
 			tasksList = service.tasklists().get(id).execute();
 		
 				 com.google.api.services.tasks.model.Tasks tasks = service.tasks().list(tasksList.getId()).execute();
-				 arraylistResult = new ArrayList<Task>();
-				 taskView = new TaskListView();
-				 taskView.setId(tasksList.getId());
-				 taskView.setTitle(tasksList.getTitle());
+				 arraylistResult = new ArrayList<TaskView>();
+				 taskListView = new TaskListView();
+				 taskListView.setId(tasksList.getId());
+				 taskListView.setTitle(tasksList.getTitle());
 				if(tasks.getItems() != null)
         	   		{
 					
 					 
-				 for (Task task : tasks.getItems()) {
-					
-					 arraylistResult.add(task);
+					 for (Task task : tasks.getItems()) {
+						 	TaskView taskView = new TaskView();
+							taskView.setId(task.getId());
+							taskView.setTitle(task.getTitle());
+							taskView.setStatus(task.getStatus());
+							taskView.setIsNew(false);
+							
+						 arraylistResult.add(taskView);
+				            }
 			            }
-		            }
-				 
-				 taskView.setTasks(arraylistResult);
-				 response.add(taskView);
+					 
+					taskListView.setTasks(arraylistResult);
+					 response.add(taskListView);;
 			 	
 			 
 		} catch (IOException e) {
@@ -236,10 +248,7 @@ public class TasksController {
 			e.printStackTrace();
 		}
     	
-    	return response;
-    	
-    	
-        
+    	return response;   
     }
     
     @RequestMapping(value = "/updateTasksList", method = RequestMethod.POST)

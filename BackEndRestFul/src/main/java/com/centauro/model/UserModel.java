@@ -2,6 +2,7 @@ package com.centauro.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,6 +23,8 @@ public class UserModel implements Serializable{
 
 	private String email;
 	
+	//nullable
+	@Column(nullable = true)
 	private String token;
 
 	public Integer getId() {

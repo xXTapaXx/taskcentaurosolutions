@@ -2,6 +2,7 @@ package com.centauro.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,8 +25,12 @@ public class TaskModel implements Serializable{
 
 	private Integer task_list_id;
 	
+	//nullable
+	@Column(nullable = true)
 	private String status;
 	
+	//nullable
+	@Column(nullable = true)
 	private Integer sync;
 
 	public Integer getId() {

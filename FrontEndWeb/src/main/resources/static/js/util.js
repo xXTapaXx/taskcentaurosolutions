@@ -14,8 +14,12 @@ jQuery(document).ready(function () {
 		 var color = getRandomColor();
 		 jQuery(".taskListRight:nth-child("+i+") .panel").css("background-color",color);
 	 }
-	 
-	 
+	
+	jQuery("a[data-title=deleteList]").click(function () {
+       
+        jQuery("#doDeleteItem").attr('onClick','doDeleteList();');
+        jQuery("#idDeleteList").val(this.id);
+});
 	 
 	jQuery("a[data-title=addTask]").click(function () {
 	        var task = "<div class='col-lg-12 col-md-12 col-xs-12'>" +
@@ -40,10 +44,37 @@ jQuery(document).ready(function () {
 	        
 	});
 	
+	jQuery("a[data-title=addEmail]").click(function () {
+		 var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+
+		    // Se utiliza la funcion test() nativa de JavaScript
+		    if (regex.test($('#sharedEmail').val().trim())) {
+			    	var task = "<div class='col-lg-12 col-md-12 col-xs-12'>" +				
+				"<div class='col-lg-11 col-md-11 col-xs-11'>" +
+		      		"<input type='text' name='email' class='form-control' readOnly='readOnly' value=\""+$('#sharedEmail').val().trim()+"\"></input>" +
+		      	"</div>" +
+		      	"<div class='col-md-1 col-sm-1 col-xs-1 pull-right'>"+
+				  	"<a href='javascript:void(0)' data-title='deleteTaskOrEmail'><i class='material-icons'>delete</i></a>"+
+	            "</div> "+
+		     "</div>";	
+			    jQuery(".addTask").append(task);
+			    doDeleteItem();
+		    } else {
+		        alert('La direccón de correo no es valida');
+		    }
+});
+	
 	jQuery("a[data-title=openModel]").click(function (){
 		jQuery("#titleTask").val("");
 		jQuery(".addTask").empty();
 		jQuery("#idListTask").val("");
+	});
+	
+	jQuery("a[data-title=sharedList]").click(function (){
+		jQuery("#titleTask").val("");
+		jQuery(".addTask").empty();
+		jQuery("#idListTask").val("");
+		jQuery("#idSharedList").val(this.id);
 	});
 	
 	jQuery("h4[data-title=taskListEdit]").click(function () {
@@ -76,7 +107,7 @@ jQuery(document).ready(function () {
                   		"<input type='text' class='form-control completed' onInput=\"updateTask(\'"+id+"\',\'"+data[0].items[i].id+"\');\" id='"+data[0].items[i].id+"' value='"+data[0].items[i].title+"' ></input>" +
                   	"</div>" +
                   	"<div class='col-md-1 col-sm-1 col-xs-1 pull-right'>"+
-					  	"<a href='javascript:void(0)'><i class='material-icons'>delete</i></a>"+
+					  	"<a href='javascript:void(0)' data-toggle='modal' data-target='#delete' onClick=\"deleteTask(\'"+id+"\',\'"+data[0].items[i].id+"\')\"><i class='material-icons'>delete</i></a>"+
 	                "</div> "+
                  "</div>";
 				}else{
@@ -93,7 +124,7 @@ jQuery(document).ready(function () {
                   		"<input type='text' class='form-control' onInput=\"updateTask(\'"+id+"\',\'"+data[0].items[i].id+"\');\" id='"+data[0].items[i].id+"' value='"+data[0].items[i].title+"'></input>" +
                   	"</div>" +
                   	"<div class='col-md-1 col-sm-1 col-xs-1 pull-right'>"+
-					  	"<a href='javascript:void(0)'><i class='material-icons'>delete</i></a>"+
+					  	"<a href='javascript:void(0)' data-toggle='modal' data-target='#delete' onClick=\"deleteTask(\'"+id+"\',\'"+data[0].items[i].id+"\')\"><i class='material-icons'>delete</i></a>"+
 	                "</div> "+
                  "</div>";
 				}
@@ -108,6 +139,7 @@ jQuery(document).ready(function () {
 	        jQuery("#idListTask").val(id);
 	        jQuery("#titleTask").val(title);
 	        jQuery("#titleTask").attr('onInput',"updateTaskList(\'"+id+"\')");
+	        doDeleteItem();
 	        jQuery(".addTask").html(task);
 	        
 	     })
@@ -207,4 +239,77 @@ function insertTasks(){
      .fail(function( jqXHR, textStatus, errorThrown ) {
         //alert(textStatus);
     });
+	
+}
+
+function doDeleteList(){
+	
+	jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "/deleteList",
+        data: jQuery("#formDelete").serialize(),
+    })
+     .done(function( data, textStatus, jqXHR ) {
+        alert(data);
+     })
+     .fail(function( jqXHR, textStatus, errorThrown ) {
+        //alert(textStatus);
+    });
+	
+}
+
+function doDeleteTask(){
+	
+	jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "/deleteTask",
+        data: jQuery("#formDelete").serialize(),
+    })
+     .done(function( data, textStatus, jqXHR ) {
+        alert(data);
+     })
+     .fail(function( jqXHR, textStatus, errorThrown ) {
+        //alert(textStatus);
+    });
+	
+	jQuery("#"+jQuery("#idDeleteTask").val()).parent().parent().remove();
+	
+}
+
+function doInsertShared(){
+	
+	jQuery.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "/sharedList",
+        data: jQuery("#formInsertShared").serialize(),
+    })
+     .done(function( data, textStatus, jqXHR ) {
+        alert(data);
+     })
+     .fail(function( jqXHR, textStatus, errorThrown ) {
+        //alert(textStatus);
+    });
+	
+	
+}
+
+function deleteTask(idList,idTask){
+
+	       
+        jQuery("#doDeleteItem").attr('onClick','doDeleteTask();');
+        jQuery("#idDeleteTask").val(idTask);
+        jQuery("#idDeleteList").val(idList);
+
+}
+
+function doDeleteItem(){
+	jQuery("a[data-title=deleteTaskOrEmail]").click(function () {
+		 jQuery(this).parent().parent().remove();
+		
+});
+	
+
 }

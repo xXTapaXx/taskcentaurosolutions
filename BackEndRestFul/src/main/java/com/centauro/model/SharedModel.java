@@ -3,6 +3,7 @@ package com.centauro.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -33,12 +34,16 @@ public class SharedModel implements Serializable{
     @JoinColumn(name="shared_list_id", referencedColumnName ="id")
 	private ListModel shared_list_id;
 	
-	
+	//nullable
+	@Column(nullable = true)
 	private String list_id;
 	
-	
+	//nullable
+	@Column(nullable = true)
 	private String task_id;
 	
+	//nullable
+	@Column(nullable = true)
 	private Integer sync;
 
 	public String getEmail() {

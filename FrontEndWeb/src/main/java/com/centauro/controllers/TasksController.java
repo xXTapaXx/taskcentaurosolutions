@@ -225,6 +225,7 @@ public class TasksController {
 			String title = request.getParameter("title");
 			String[] tasks = request.getParameterValues("task");
 			String id = request.getParameter("id");
+			String date = request.getParameter("date");
 			TaskList ListTasks = null;
 			Task resultTask = null;
 			Tasks service = TasksQuickstart.getTasksService();
@@ -240,23 +241,25 @@ public class TasksController {
 				taskList.setTitle(title);		
 				ListTasks = service.tasklists().insert(taskList).execute();		
 			}	 
-					 for (String task : tasks) {
-						 TaskView taskView = new TaskView();
-				 			Task insertTask = new Task();
-						 	insertTask.setTitle(task);
-	
-						 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
-						 	
-						 	taskView.setId(resultTask.getId());
-							taskView.setTitle(resultTask.getTitle());
-							taskView.setStatus(resultTask.getStatus());
-							taskView.setIsNew(false);
-							
-							listTaskView.add(taskView);
-						 	
-			            }
+					 if(tasks != null){
+						 for (String task : tasks) {
+							 TaskView taskView = new TaskView();
+					 			Task insertTask = new Task();
+							 	insertTask.setTitle(task);
+		
+							 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
+							 	
+							 	taskView.setId(resultTask.getId());
+								taskView.setTitle(resultTask.getTitle());
+								taskView.setStatus(resultTask.getStatus());
+								taskView.setIsNew(false);
+								
+								listTaskView.add(taskView);
+							 	
+				            }
+					 }
 					 									
-						shared.updateShared(ListTasks.getId(), ListTasks.getTitle(), listTaskView);
+						shared.updateShared(ListTasks.getId(), ListTasks.getTitle(), listTaskView,date);
 					 
 					 
 					 				  
@@ -388,7 +391,7 @@ public class TasksController {
 					listTaskView.add(taskView);
 				}
 				
-				shared.updateShared(taskList.getId(), taskList.getTitle(), listTaskView);
+				shared.updateShared(taskList.getId(), taskList.getTitle(), listTaskView,null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -413,7 +416,7 @@ public class TasksController {
 			 result = service.tasklists().update(taskList.getId(), taskList).execute();
 			 
 			 
-			 shared.updateShared(id, title, null);
+			 shared.updateShared(id, title, null,null);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

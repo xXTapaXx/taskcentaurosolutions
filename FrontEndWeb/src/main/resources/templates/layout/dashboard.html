@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
  	<link rel="stylesheet" th:href="@{css/bootstrap-material-design.css}" />
  	<link rel="stylesheet" th:href="@{css/style.css}" />
+ 	<link rel="stylesheet" th:href="@{css/datepicker.css}" />
     
   <!-- end: Css -->
 
@@ -37,6 +38,7 @@
 	    <div class="modal-content">
 	    <form action="" method="POST" id="formInsertTasks">
 	    <input type="hidden" name="id" id="idListTask"/>
+	    <input type="hidden" name="date" id="dateSharedList" />
 	      <div class="modal-header">
 	      
 	        <div class="col-md-10">
@@ -53,7 +55,7 @@
 	      <div class="modal-footer">
 	      	<a role="button" type="button" data-title="addTask" class="btn btn-raised btn-success"><i class="material-icons">add</i> Agregar Tarea</a>
 					
-	        <button type="button" class="btn btn-raised btn-default" data-dismiss="modal" onClick="insertTasks();" id="btnTask" >Cerrar<div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 17.6563px; top: 18px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div><div class="ripple ripple-on ripple-out" style="left: 42.6563px; top: 21px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div></div></button>
+	        <button type="button" class="btn btn-raised btn-default" data-dismiss="modal" data-toggle="modal" data-target="#delete" onClick="doDate();" id="btnTask" >Cerrar<div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 17.6563px; top: 18px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div><div class="ripple ripple-on ripple-out" style="left: 42.6563px; top: 21px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div></div></button>
 	      </div>
 	    </div>
 	  </div>
@@ -86,26 +88,29 @@
 	  </div>
 	</div>
 	
+	
+	<input type="text" id="date-fr" class="form-control"  data-dtp="dtp_9BrYC" /> 
+	
 	<div id="delete" class="modal fade" tabindex="-1" style="display: none;">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	    <form action="" method="POST" id="formDelete">
 	    <input type="hidden" name="listId" id="idDeleteList"/>
 	    <input type="hidden" name="taskId" id="idDeleteTask" />
-	      <div class="modal-header">
-	      	       <h2>Eliminar</h2>
+	      <div class="modal-header dialog-decision-header">
+	      	       
 	     </div> 	       
 	      <div class="modal-body">
-	       <div class="text-center">
-					      <h3><span>¿Estas Seguro(a) que desea eliminar esta Lista?</span></h3>                                                                                    
+	       <div class="text-center dialog-decision-body">
+					                                                                                          
 				</div>
 				
 	      </div>
 	      </form>
 	      <div class="modal-footer">
-	      	<a role="button" type="button" id="doDeleteItem" data-dismiss="modal" class="btn btn-raised btn-danger"> Si</a>
+	      	<a role="button" type="button" id="doDeleteItem" data-dismiss="modal" data-toggle="modal" class="btn btn-raised btn-danger"> Si</a>
 					
-	        <button type="button" class="btn btn-raised btn-default" data-dismiss="modal" id="btnTask" >No<div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 17.6563px; top: 18px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div><div class="ripple ripple-on ripple-out" style="left: 42.6563px; top: 21px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div></div></button>
+	        <button type="button" class="btn btn-raised btn-default" data-dismiss="modal" id="btnDontDeleteItem" >No<div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 17.6563px; top: 18px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div><div class="ripple ripple-on ripple-out" style="left: 42.6563px; top: 21px; transform: scale(10.875); background-color: rgb(0, 150, 136);"></div></div></button>
 	      </div>
 	    </div>
 	  </div>
@@ -124,7 +129,10 @@
     <script th:src="@{/js/ripples.js}"></script>
     <script th:src="@{/js/material.js}"></script>
     <script th:src="@{/js/randomColor.js}"></script>
+    <script th:src="@{/js/moment.js}"></script>
+    <script th:src="@{/js/datepicker.js}"></script>
     <script th:src="@{/js/util.js}"></script>
+    
 
     <!-- custom -->
      <script th:src="@{/js/main.js}"></script>

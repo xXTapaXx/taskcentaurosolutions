@@ -94,7 +94,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
     private Calendar calendar;
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
-    private static final String TIME_PATTERN = "HH:mm:ss";
+        private static final String TIME_PATTERN = "HH:mm:ss";
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     @Override
     protected void onCreate(Bundle savedInstanceState) {

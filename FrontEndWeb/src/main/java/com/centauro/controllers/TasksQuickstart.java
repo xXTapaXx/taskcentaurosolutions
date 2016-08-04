@@ -91,6 +91,8 @@ public class TasksQuickstart {
         /*String redirectUri = authorizationCodeInstalledApp.getReceiver().getRedirectUri();
         AuthorizationCodeRequestUrl authorizationUrl =
         		authorizationCodeInstalledApp.getFlow().newAuthorizationUrl().setRedirectUri(redirectUri);
+        Credential credential = authorizationCodeInstalledApp.authorize("user");
+        
         
         if(Desktop.isDesktopSupported()){
             Desktop desktop = Desktop.getDesktop();
@@ -110,8 +112,8 @@ public class TasksQuickstart {
             }
         }
         
-        System.out.println(authorizationUrl.build());*/
-       /* System.out.println(
+        System.out.println(authorizationUrl.build());
+        System.out.println(
                 "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());*/
         return credential;
     }

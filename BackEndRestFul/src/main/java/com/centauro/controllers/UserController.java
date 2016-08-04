@@ -36,6 +36,7 @@ public class UserController {
     		UserModel user = new UserModel();
     		user.setEmail(email);
     		user.setToken(token);
+    		
     		userService.create(user);
     	}
     }	

@@ -109,7 +109,7 @@ public class SharedController {
         
     }
     
-    public Task updateShared(String idList, String titleList,List<TaskView> listTaskView) {
+    public Task updateShared(String idList, String titleList,List<TaskView> listTaskView, String date) {
     	Gson gson = new Gson();
     	Task result = null;
 
@@ -121,7 +121,7 @@ public class SharedController {
 			taskListView.setTitle(titleList);
 			
 			taskListView.setTasks(listTaskView);
-			taskListView.setDate("");
+			taskListView.setDate(date);
 			
 			sharedView.setMyEmail("jason@centaurosolutions.com");				
 			sharedView.setEmails(null);

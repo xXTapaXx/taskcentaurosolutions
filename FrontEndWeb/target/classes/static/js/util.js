@@ -1,5 +1,21 @@
 jQuery(document).ready(function () {
-	 
+	
+	jQuery('#date-fr').bootstrapMaterialDatePicker
+	({
+		format: 'YYYY-MM-DD HH:mm:ss',
+		lang: 'fr',
+		weekStart: 1, 
+		cancelText : 'Cancelar',
+		nowButton : true,
+		switchOnClick : true
+	}).on('change', function(e, date)
+			{
+			jQuery("#dateSharedList").val(jQuery("#date-fr").val());
+			insertTasks();
+		});
+	
+	$("#date-fr").hide();
+	
 	for(var i = 1; i <= jQuery(".taskListLeft").size(); i++){
 		 var color = getRandomColor();
 		 jQuery(".taskListLeft:nth-child("+i+") .panel").css("background-color",color);
@@ -16,7 +32,8 @@ jQuery(document).ready(function () {
 	 }
 	
 	jQuery("a[data-title=deleteList]").click(function () {
-       
+		jQuery(".dialog-decision-header").html("<h2>Eliminar</h2>");
+		jQuery(".dialog-decision-body").html("<h3><span>¿Estas Seguro(a) que desea eliminar esta Lista?</span></h3>");
         jQuery("#doDeleteItem").attr('onClick','doDeleteList();');
         jQuery("#idDeleteList").val(this.id);
 });
@@ -79,6 +96,7 @@ jQuery(document).ready(function () {
 	
 	jQuery("h4[data-title=taskListEdit]").click(function () {
 		jQuery("#titleTask").val("");
+		jQuery("#dateSharedList").val("");
 		jQuery(".addTask").empty();
 		jQuery("#idListTask").val("");
 		jQuery.ajax({
@@ -296,9 +314,27 @@ function doInsertShared(){
 	
 }
 
-function deleteTask(idList,idTask){
+function doDate(){
+	
+	jQuery(".dialog-decision-header").html("<h2>Fecha</h2>");
+	jQuery(".dialog-decision-body").html("<h3><span>¿Desea Seleccionar una Fecha de Caducidad?</span></h3>");   
+    jQuery("#doDeleteItem").attr('onClick','doSelectDate();');
+    jQuery("#doDeleteItem").addClass("date-fr");
+    jQuery("#doDeleteItem").attr('data-target','#date');
+    jQuery("#btnDontDeleteItem").attr('onClick','insertTasks();');
+       
+}
 
-	       
+function doSelectDate(){
+	
+		jQuery("#date-fr").show().focus().hide();
+		
+}
+
+function deleteTask(idList,idTask){
+		
+		jQuery(".dialog-decision-header").html("<h2>Eliminar</h2>");
+		jQuery(".dialog-decision-body").html("<h3><span>¿Estas Seguro(a) que desea eliminar esta Tarea?</span></h3>");   
         jQuery("#doDeleteItem").attr('onClick','doDeleteTask();');
         jQuery("#idDeleteTask").val(idTask);
         jQuery("#idDeleteList").val(idList);
@@ -311,5 +347,4 @@ function doDeleteItem(){
 		
 });
 	
-
 }

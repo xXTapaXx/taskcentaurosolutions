@@ -11,13 +11,18 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.centauro.exception.ShopNotFound;
 import com.centauro.model.CalendarModel;
 import com.centauro.model.UserModel;
 import com.centauro.service.CalendarService;
 import com.centauro.service.UserService;
+
+
 
 @RestController
 public class MessageController {
@@ -29,7 +34,7 @@ public class MessageController {
 	private UserService userService;
 	
 	@RequestMapping("/message")
-    public void Message(String token) throws IOException {
+    public  void Message(String token) throws IOException {
 		String url="https://fcm.googleapis.com/fcm/send";
 		URL object=new URL(url);
 
@@ -77,23 +82,35 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/haveNotification")
-    public String Notification() {
+    public  String Notification() {
 		String response = "No hay notificaciones pendientes";
 		Timestamp maxDate = new Timestamp(System.currentTimeMillis()+60*60*1000);
-		List<CalendarModel> calendars = calendarService.getAllNotification(maxDate);
-		//List<CalendarModel> calendar = calendarService.findAll();
-		for(CalendarModel calendar : calendars){
-				List<UserModel> users = userService.findByEmail(calendar.getUser_id().getEmail());
-				for(UserModel user : users){
-					try {
-						Message(user.getToken());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+ 		List<CalendarModel> calendars = calendarService.getAllNotification(maxDate);
+ 		CalendarModel deleteCalendar = null;
+		//List<CalendarModel> calendars = calendarService.findAll();
+			if(calendars.size() > 0 ){
+					for(CalendarModel calendar : calendars){
+						List<UserModel> users = userService.findByEmail(calendar.getUser_id().getEmail());
+						for(UserModel user : users){
+							try {
+								Message(user.getToken());
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+						try {
+							calendarService.delete(calendar.getId());
+						} catch (ShopNotFound e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						response = "Se notifico correctamente";
 				}
-				response = "Se notifico correctamente";
-		}
+			}
+		
+		
 		 return response;
 		
 	}

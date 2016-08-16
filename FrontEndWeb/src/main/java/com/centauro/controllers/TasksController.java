@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.hadoop.mapred.gethistory_jsp;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +21,6 @@ import org.springframework.web.util.UriTemplate;
 import com.centauro.view.SharedModelView;
 import com.centauro.view.SharedView;
 import com.centauro.view.TaskListView;
-import com.centauro.view.TaskModelView;
 import com.centauro.view.TaskView;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.model.Task;
@@ -34,9 +33,13 @@ import com.google.gson.reflect.TypeToken;
 @Controller
 public class TasksController {
 	
+	//private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
+	private static final String URL_BACKEND = "http://localhost:8081/";
+	private JSONObject user;
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/taskslists")
-    public String allTasksLists(Model model) {
+    public String allTasksLists(HttpServletRequest request,Model model) {
 		//List<SharedModelView> tasksLists = null;
 		Gson gson = new Gson();
 		List<Object> listLeft = new ArrayList<Object>();
@@ -46,37 +49,58 @@ public class TasksController {
 		List<SharedModelView> sharedModelView;
 		TaskListView taskView;
 		int count = 1;
+		user = (JSONObject) request.getSession().getAttribute("user");
+		String tasksLists;
+		Boolean haveCalendar;
+		//JSONObject user = (JSONObject) new JSONParser().parse(jsonObject);
 		try{
 			RestTemplate restTemplate = new RestTemplate();
-			String email = "jason@centaurosolutions.com";
+			String email = (String) user.get("email");
 			//	String url = "http://localhost:8081/haveShared?email={email}";
 			//URI expanded = new UriTemplate(url).expand(email); // this is what RestTemplate uses 
 			
-			String tasksLists = restTemplate.getForObject("http://localhost:8081/haveSharedFE?email={email}",String.class,email);
+			 tasksLists = restTemplate.getForObject(URL_BACKEND + "haveSharedFE?email={email}",String.class,email);
 			
 			Type type = new TypeToken<List<SharedModelView>>(){}.getType();
             sharedModelView = (List<SharedModelView>) gson.fromJson(tasksLists,type);
 			if(sharedModelView.size() > 0){
-				insertOrUpdateTask(sharedModelView);
+				insertOrUpdateTask(request,sharedModelView);
 			} 
 		//RestTemplate restTemplate = new RestTemplate();
 		//tasksLists = restTemplate.getForObject("http://localhost:8081/taskslists", List.class);
 		
     	TaskLists result = null;
     	try {
-			Tasks service = TasksQuickstart.getTasksService();
+			//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
 			
 			 result = service.tasklists().list().execute();
 			 
 			 
 			 List<TaskList> tasklists = result.getItems();
 			 for (TaskList tasklist : tasklists) {
-				 
+				 String listId = tasklist.getId();
+				 haveCalendar = restTemplate.getForObject(URL_BACKEND + "haveCalendar?listId={listId}",Boolean.class,listId);
 				 com.google.api.services.tasks.model.Tasks tasks = service.tasks().list(tasklist.getId()).execute();
 				 arraylistResult = new ArrayList<Task>();
 				 taskView = new TaskListView();
 				 taskView.setId(tasklist.getId());
 				 taskView.setTitle(tasklist.getTitle());
+				 taskView.setIsShared(false);
+				 taskView.setIsCalendar(false);
+				 if(sharedModelView.size() > 0){
+					 
+					 for(SharedModelView shared : sharedModelView){
+						 if(shared.list_id.equals(listId)){
+							 taskView.setIsShared(true);
+							 break;
+						 }
+					 }
+					 
+				 }
+				 if(haveCalendar){
+					 taskView.setIsCalendar(true);
+				 }
 				if(tasks.getItems() != null)
         	   		{
 					
@@ -119,7 +143,7 @@ public class TasksController {
 		return "index";
 	}
 	
-	public void insertOrUpdateTask(List<SharedModelView> sharedModelView){
+	public void insertOrUpdateTask(HttpServletRequest request,List<SharedModelView> sharedModelView){
 		Gson gson = new Gson();
         TaskList listTasks = null;
         Task resultTask = null;
@@ -127,7 +151,8 @@ public class TasksController {
         String listName = null;
         List<?> tasksLists = null;
         try {
-        	Tasks mService = TasksQuickstart.getTasksService();
+        	//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks mService = (Tasks) request.getSession().getAttribute("service");
 
             for(SharedModelView shared : sharedModelView){
                 if(!shared.getShared_list_id().getList() .isEmpty()) {
@@ -167,7 +192,7 @@ public class TasksController {
 
                             try {
                                 mService.tasks().delete(shared.getList_id(), shared.getTask_id()).execute();
-
+                                
 
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -196,7 +221,10 @@ public class TasksController {
 
                     }
                 shared.setList_id(listTasks.getId());
-                shared.setTask_id(resultTask.getId());
+                if(resultTask != null){
+                	shared.setTask_id(resultTask.getId());
+                }
+                
                 }
             
             Type type = new TypeToken<List<SharedModelView>>(){}.getType();
@@ -204,7 +232,7 @@ public class TasksController {
             
             RestTemplate restTemplate = new RestTemplate();
             
-			String url = "http://localhost:8081/updateSync?shared={shared}";
+			String url = URL_BACKEND + "updateSync?shared={shared}";
 			URI expanded = new UriTemplate(url).expand(shared); // this is what RestTemplate uses 
 			
 			tasksLists = restTemplate.postForObject(expanded, null,List.class);
@@ -218,7 +246,7 @@ public class TasksController {
     }
 	
 	@RequestMapping(value = "/insertTasks", method = RequestMethod.POST)
-    public String insertTasks(HttpServletRequest request, Model model) {
+    public @ResponseBody String insertTasks(HttpServletRequest request, Model model) {
 		String idTasksList = null;
 		try{
 			RestTemplate restTemplate = new RestTemplate();
@@ -228,10 +256,11 @@ public class TasksController {
 			String date = request.getParameter("date");
 			TaskList ListTasks = null;
 			Task resultTask = null;
-			Tasks service = TasksQuickstart.getTasksService();
+			//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
 			List<TaskView> listTaskView = new ArrayList<>();
 			SharedController shared = new SharedController();
-			if(id != null){
+			if(id != null && !id.isEmpty()){
 				ListTasks = service.tasklists().get(id).execute();
 				ListTasks.setTitle(title);
 
@@ -259,7 +288,7 @@ public class TasksController {
 				            }
 					 }
 					 									
-						shared.updateShared(ListTasks.getId(), ListTasks.getTitle(), listTaskView,date);
+						shared.updateShared(request,ListTasks.getId(), ListTasks.getTitle(), listTaskView,date);
 					 
 					 
 					 				  
@@ -273,14 +302,15 @@ public class TasksController {
 	}
 	
 	@RequestMapping(value = "/getTaskList/{id}")
-	public @ResponseBody List<?> getTaskLists(@PathVariable(value="id") String id) {
+	public @ResponseBody List<?> getTaskLists(HttpServletRequest request,@PathVariable(value="id") String id) {
     	
     	List<TaskListView> response = new ArrayList<TaskListView>();
     	List<TaskView> arraylistResult = null ;
 	    TaskListView taskListView = null;
 	    TaskList tasksList = null;
     	try {
-			Tasks service = TasksQuickstart.getTasksService();
+    		//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
 					
 			tasksList = service.tasklists().get(id).execute();
 		
@@ -325,7 +355,8 @@ public class TasksController {
     	String id = request.getParameter("id");
     	String listId = request.getParameter("listId");
     	try {
-			Tasks service = TasksQuickstart.getTasksService();
+    		//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
  			Task task = service.tasks().get(listId,id).execute();
 			
 			if(status.equals("needsAction")){
@@ -365,7 +396,8 @@ public class TasksController {
     	SharedController shared = new SharedController();
     	List<TaskView> listTaskView = new ArrayList<TaskView>();
     	try {
-			Tasks service = TasksQuickstart.getTasksService();
+    		//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
 			Task task = service.tasks().get(listId,id).execute();
 			task.setTitle(title);
 			
@@ -391,7 +423,7 @@ public class TasksController {
 					listTaskView.add(taskView);
 				}
 				
-				shared.updateShared(taskList.getId(), taskList.getTitle(), listTaskView,null);
+				shared.updateShared(request,taskList.getId(), taskList.getTitle(), listTaskView,null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -409,14 +441,15 @@ public class TasksController {
     	String title = request.getParameter("title");
     	SharedController shared = new SharedController();
     	try {
-			Tasks service = TasksQuickstart.getTasksService();
+    		//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
 			TaskList taskList = service.tasklists().get(id).execute();
 			taskList.setTitle(title);
 
 			 result = service.tasklists().update(taskList.getId(), taskList).execute();
 			 
 			 
-			 shared.updateShared(id, title, null,null);
+			 shared.updateShared(request,id, title, null,null);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -428,43 +461,38 @@ public class TasksController {
     }
     
     @RequestMapping(value = "/deleteList", method = RequestMethod.POST)
-    public @ResponseBody String deleteList(HttpServletRequest request) {
+    public @ResponseBody String deleteList(HttpServletRequest request) throws IOException {
     	
     	Gson gson = new Gson();
     	Type type = new TypeToken<List<SharedModelView>>(){}.getType();
     	String listId = request.getParameter("listId");
     	List<SharedModelView> sharedModelView;
-    	try {
-			Tasks service = TasksQuickstart.getTasksService();
-			
-			RestTemplate restTemplate = new RestTemplate();
-			String email = "jason@centaurosolutions.com";
-			String tasksLists = restTemplate.getForObject("http://localhost:8081/haveSharedFE?email={email}",String.class,email);
-			
-			
-            sharedModelView = (List<SharedModelView>) gson.fromJson(tasksLists,type);
-			if(sharedModelView.size() > 0){
-				 for(SharedModelView shared : sharedModelView){
+    	//Tasks service = TasksQuickstart.getTasksService(request);
+		Tasks service = (Tasks) request.getSession().getAttribute("service");
+		user = (JSONObject) request.getSession().getAttribute("user");
+		RestTemplate restTemplate = new RestTemplate();
+		String email = (String) user.get("email");
+		
+		service.tasklists().delete(listId).execute();
+		String tasksLists = restTemplate.getForObject(URL_BACKEND + "haveSharedFE?email={email}",String.class,email);
+		
+		
+		sharedModelView = (List<SharedModelView>) gson.fromJson(tasksLists,type);
+		if(sharedModelView.size() > 0){
+			 for(SharedModelView shared : sharedModelView){
 
-		                if(listId.equals(shared.getList_id())){
-		                    shared.setSync(0);
-		                    shared.getShared_list_id().setSync(0);
-		                    shared.getShared_task_id().setSync(0);
-		                }
-
+		            if(listId.equals(shared.getList_id())){
+		                shared.setSync(0);
+		                shared.getShared_list_id().setSync(0);
+		                shared.getShared_task_id().setSync(0);
 		            }
-				 String url = "http://localhost:8081/updateDeleteList?shared={shared}";
-				 String sharedRequest = gson.toJson(sharedModelView,type);
-				 URI expanded = new UriTemplate(url).expand(sharedRequest); // this is what RestTemplate uses 
-				 
-				 List<?> result = restTemplate.postForObject(expanded,null,List.class);
-			} 
-			
-			//service.tasklists().delete(listId).execute();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		        }
+			 String url = URL_BACKEND + "updateDeleteList?shared={shared}";
+			 String sharedRequest = gson.toJson(sharedModelView,type);
+			 URI expanded = new UriTemplate(url).expand(sharedRequest); // this is what RestTemplate uses 
+			 
+			 List<?> result = restTemplate.postForObject(expanded,null,List.class);
 		}
     	
     	return "Se Eliminó la lista exitosamente";
@@ -472,7 +500,7 @@ public class TasksController {
     }
     
     @RequestMapping(value = "/deleteTask", method = RequestMethod.POST)
-    public @ResponseBody String deleteTask(HttpServletRequest request) {
+    public @ResponseBody String deleteTask(HttpServletRequest request) throws IOException {
     	
     	Gson gson = new Gson();
     	Type type = new TypeToken<List<SharedModelView>>(){}.getType();
@@ -483,51 +511,49 @@ public class TasksController {
     	TaskListView taskListView = new TaskListView();
     	TaskView taskView = new TaskView();
     	List<TaskView> listTaskView = new ArrayList<>();
-    	try {
-			Tasks service = TasksQuickstart.getTasksService();
-			
-			RestTemplate restTemplate = new RestTemplate();
-			String email = "jason@centaurosolutions.com";
-			String tasksLists = restTemplate.getForObject("http://localhost:8081/haveSharedFE?email={email}",String.class,email);
-			
-			
-            sharedModelView = (List<SharedModelView>) gson.fromJson(tasksLists,type);
-			if(sharedModelView.size() > 0){
-				 for(SharedModelView shared : sharedModelView){
+    	//Tasks service = TasksQuickstart.getTasksService(request);
+		Tasks service = (Tasks) request.getSession().getAttribute("service");
+		user = (JSONObject) request.getSession().getAttribute("user");
+		RestTemplate restTemplate = new RestTemplate();
+		String email = (String) user.get("email");
+		
+		service.tasks().delete(listId, taskId).execute();
+		
+		String tasksLists = restTemplate.getForObject( URL_BACKEND + "haveSharedFE?email={email}",String.class,email);
+		
+		
+		sharedModelView = (List<SharedModelView>) gson.fromJson(tasksLists,type);
+		if(sharedModelView.size() > 0){
+			 for(SharedModelView shared : sharedModelView){
 
-		                if(taskId.equals(shared.getTask_id())){
-		                	
-		                	taskView.setId(shared.task_id);
-                			taskView.setIsNew(false);
-                			taskView.setTitle(shared.getShared_task_id().getTask());
-                			taskView.setStatus(shared.getShared_task_id().getStatus());
-                			
-                			listTaskView.add(taskView);
-                			
-		                	taskListView.setId(shared.getList_id());
-		                	taskListView.setTitle(shared.getShared_list_id().getList());		                	
-		                	taskListView.setDate(null);
-		                	taskListView.setTasks(listTaskView);
-		                	
-		                	sharedView.setMyEmail(email);
-		                	sharedView.setEmails(null);
-		                	sharedView.setTaskListView(taskListView);
-		                	
-		                }
-
+		            if(taskId.equals(shared.getTask_id())){
+		            	
+		            	taskView.setId(shared.task_id);
+		    			taskView.setIsNew(false);
+		    			taskView.setTitle(shared.getShared_task_id().getTask());
+		    			taskView.setStatus(shared.getShared_task_id().getStatus());
+		    			
+		    			listTaskView.add(taskView);
+		    			
+		            	taskListView.setId(shared.getList_id());
+		            	taskListView.setTitle(shared.getShared_list_id().getList());		                	
+		            	taskListView.setDate(null);
+		            	taskListView.setTasks(listTaskView);
+		            	
+		            	sharedView.setMyEmail(email);
+		            	sharedView.setEmails(null);
+		            	sharedView.setTaskListView(taskListView);
+		            	
 		            }
-				 String url = "http://localhost:8081/updateDeleteTask?shared={shared}";
-				 String sharedRequest = gson.toJson(sharedView,SharedView.class);
-				 URI expanded = new UriTemplate(url).expand(sharedRequest); // this is what RestTemplate uses 
-				 
-				 List<?> result = restTemplate.getForObject(expanded,List.class);
-			}
-			//service.tasks().delete(listId, taskId).execute();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		        }
+			 String url = URL_BACKEND + "updateDeleteTask?shared={shared}";
+			 String sharedRequest = gson.toJson(sharedView,SharedView.class);
+			 URI expanded = new UriTemplate(url).expand(sharedRequest); // this is what RestTemplate uses 
+			 
+			 List<?> result = restTemplate.getForObject(expanded,List.class);
 		}
+		//service.tasks().delete(listId, taskId).execute();
     	
     	return "Se Eliminó la tarea exitosamente";
         

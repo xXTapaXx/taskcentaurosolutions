@@ -26,6 +26,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.reflect.TypeToken;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
@@ -72,7 +73,7 @@ public class LoginActivity extends Activity
 
     private static final String BUTTON_TEXT = "Call Google Tasks API";
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { TasksScopes.TASKS_READONLY, TasksScopes.TASKS };
+    private static final String[] SCOPES = { "email","profile", TasksScopes.TASKS_READONLY, TasksScopes.TASKS };
 
     /**
      * Create the main activity.
@@ -187,6 +188,7 @@ public class LoginActivity extends Activity
                         data.getExtras() != null) {
                     String accountName =
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+
                     if (accountName != null) {
 
                         GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);

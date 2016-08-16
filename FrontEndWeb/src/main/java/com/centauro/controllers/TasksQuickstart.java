@@ -5,7 +5,9 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -25,8 +27,12 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
-public class TasksQuickstart {
+import javax.servlet.http.HttpServletRequest;
 
+public class TasksQuickstart {
+	
+	//private static final String  URL_CALLBACK = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/callBack";
+		private static final String URL_CALLBACK = "http://localhost:8080/callBack";
 	/** Application name. */
     private static final String APPLICATION_NAME =
         "Google Tasks API Java Quickstart";
@@ -70,52 +76,34 @@ public class TasksQuickstart {
      * @return an authorized Credential object.
      * @throws IOException
      */
-    public static Credential authorize() throws IOException {
+    public static Credential authorize(String code) throws IOException {
         // Load client secrets.
         InputStream in =
             TasksQuickstart.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        // Build flow and trigger user authorization request.
+        
         GoogleAuthorizationCodeFlow flow =
-                new GoogleAuthorizationCodeFlow.Builder(
-                        HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(DATA_STORE_FACTORY)
+                new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT,
+                		JSON_FACTORY,
+                		clientSecrets,
+                        SCOPES)
+                //.setDataStoreFactory(DATA_STORE_FACTORY)
                 .setAccessType("offline")
                 //.setAccessType("online")
                 .build();
-        authorizationCodeInstalledApp =  new AuthorizationCodeInstalledApp(
-                flow, new LocalServerReceiver());
-        Credential credential = authorizationCodeInstalledApp.authorize("user");
-        /*String redirectUri = authorizationCodeInstalledApp.getReceiver().getRedirectUri();
-        AuthorizationCodeRequestUrl authorizationUrl =
-        		authorizationCodeInstalledApp.getFlow().newAuthorizationUrl().setRedirectUri(redirectUri);
-        Credential credential = authorizationCodeInstalledApp.authorize("user");
+       
+        GoogleAuthorizationCodeTokenRequest tokenRequest =
+        		flow.newTokenRequest(code);
+        	  tokenRequest.setRedirectUri(URL_CALLBACK);
+        	  GoogleTokenResponse tokenResponse = tokenRequest.execute();
+
+        	  // Store the credential for the user.
+        	  
+        return flow.createAndStoreCredential(tokenResponse, null);
         
-        
-        if(Desktop.isDesktopSupported()){
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                desktop.browse(new URI(redirectUri));
-            } catch (IOException | URISyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }else{
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                runtime.exec("xdg-open " + redirectUri);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        
-        System.out.println(authorizationUrl.build());
-        System.out.println(
-                "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());*/
-        return credential;
+
     }
 
     /**
@@ -123,11 +111,15 @@ public class TasksQuickstart {
      * @return an authorized Tasks client service
      * @throws IOException
      */
-    public static Tasks getTasksService() throws IOException {
-        Credential credential = authorize();
-        return new Tasks.Builder(
+    public static void getTasksService(HttpServletRequest request) throws IOException {
+    	String code = (String) request.getSession().getAttribute("code");
+        Credential credential = authorize(code);
+        request.getSession().setAttribute("access_token", credential.getAccessToken());
+        Tasks task = new Tasks.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+        
+        request.getSession().setAttribute("service", task);
     }
 }

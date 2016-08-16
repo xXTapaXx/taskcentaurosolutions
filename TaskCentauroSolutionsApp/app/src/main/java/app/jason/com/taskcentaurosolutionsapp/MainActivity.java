@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     }
 
     public void onGetAllTasks(){
-        new HelperTask(mCredential,this).execute();
+        new HelperTask(mCredential,this,sharedModelView).execute();
     }
 
     public void onResponseAllTasks(List<TaskListView> response){

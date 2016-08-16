@@ -30,7 +30,7 @@ public class UserController {
     public void registerUser(HttpServletRequest request) {
     	String email = request.getParameter("email");
     	String token = request.getParameter("token");
-    	UserModel userModel = userService.existUserByToken(token);
+    	UserModel userModel = userService.existUserByEmailAndToken(email,token);
     	
     	if(userModel == null){
     		UserModel user = new UserModel();
@@ -39,5 +39,9 @@ public class UserController {
     		
     		userService.create(user);
     	}
-    }	
+    }
+    
+
+    
+   
 }

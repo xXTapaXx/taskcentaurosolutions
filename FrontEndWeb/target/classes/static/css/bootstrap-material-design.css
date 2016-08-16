@@ -191,7 +191,7 @@ body .container-fluid .jumbotron-danger {
   outline: 0;
   cursor: pointer;
   text-decoration: none;
-  background: transparent;
+  //background: transparent;
 }
 .btn::-moz-focus-inner,
 .input-group-btn .btn::-moz-focus-inner {

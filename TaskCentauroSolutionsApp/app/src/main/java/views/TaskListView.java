@@ -20,6 +20,10 @@ public class TaskListView implements Serializable {
 
     public String date;
 
+    public Boolean isShared;
+
+    public Boolean isCalendar;
+
     public String getId() {
         return id;
     }
@@ -52,10 +56,28 @@ public class TaskListView implements Serializable {
         this.date = date;
     }
 
-    public TaskListView(String id, String title, List<TaskView> tasks, String date) {
+    public Boolean getShared() {
+        return isShared;
+    }
+
+    public void setShared(Boolean shared) {
+        isShared = shared;
+    }
+
+    public Boolean getCalendar() {
+        return isCalendar;
+    }
+
+    public void setCalendar(Boolean calendar) {
+        isCalendar = calendar;
+    }
+
+    public TaskListView(String id, String title, List<TaskView> tasks, String date, Boolean isShared, Boolean isCalendar) {
         this.id = id;
         this.title = title;
         this.tasks = tasks;
         this.date = date;
+        this.isShared = isShared;
+        this.isCalendar = isCalendar;
     }
 }

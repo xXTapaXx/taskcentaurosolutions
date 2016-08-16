@@ -133,7 +133,10 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
                     }
 
                 shared.setList_id(listTasks.getId());
-                shared.setTask_id(resultTask.getId());
+                if(resultTask != null){
+                    shared.setTask_id(resultTask.getId());
+                }
+
                 response = "Se Agrego y/o actualizó la tarea";
                 }
 

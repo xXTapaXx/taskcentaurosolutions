@@ -129,7 +129,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
 
         //Inicializamos el listView
         listView = (ListView) findViewById(R.id.list_view_tasks);
-
+        listView.setAdapter(adapter);
         //Inicializamos el inflate
         inflater = (LayoutInflater) getApplicationContext().
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -187,7 +187,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
                 taskViewListShared.add(task);
             }
         }
-            result = new TaskListView(taskListViewResult.getId(),taskListViewResult.getTitle(),taskViewListShared,date);
+            result = new TaskListView(taskListViewResult.getId(),taskListViewResult.getTitle(),taskViewListShared,date,false,false);
             sharedView = new SharedView(myEmail,null,result);
             //onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 
@@ -283,7 +283,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
        // }
 
 
-        taskListView = new TaskListView(idList,textViewTitleTask.getText().toString(),listTaskView,date);
+        taskListView = new TaskListView(idList,textViewTitleTask.getText().toString(),listTaskView,date,false,false);
 
         String accountName = userDetails.getString(PREF_ACCOUNT_NAME, null);
         //String accountName = null;
@@ -301,34 +301,43 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
         finish();
     }
     public void onAddTask(){
-
-
         onUpdateList();
 
         //Agregamos un item nuevo a listTaskView
         listTaskView.add(new TaskView(null,null,"needsAction",true));
-        adapter.notifyDataSetChanged();
+        onUpdateList();
+        //adapter.notifyDataSetChanged();
 
-        listView.setAdapter(adapter);
-       // listView.setAdapter(adapter);
+
+
+
+        // listView.setAdapter(adapter);
+
+
 
     }
 
     public void onUpdateList(){
-        for(int i = 0; i < listTaskView.size(); i++){
-            View view = listView.getChildAt(i);
-            EditText editTextUpdate = (EditText) view.findViewById(R.id.edit_task);
-            CheckBox checkBoxUpdate = (CheckBox) view.findViewById(R.id.checkbox_edit);
+        //View view = null;
 
-            if(checkBoxUpdate.isChecked()){
-                listTaskView.get(i).setStatus("completed");
-            }else{
-                checkBoxUpdate.setChecked(false);
-                listTaskView.get(i).setStatus("needsAction");
+            if(listTaskView.size() > 0){
+                for(int i = 0; i < listView.getChildCount(); i++){
+                    View view = listView.getChildAt(i);
+
+                    EditText editTextUpdate = (EditText) view.findViewById(R.id.edit_task);
+                    CheckBox checkBoxUpdate = (CheckBox) view.findViewById(R.id.checkbox_edit);
+
+                    if(checkBoxUpdate.isChecked()){
+                        listTaskView.get(i).setStatus("completed");
+                    }else{
+                        checkBoxUpdate.setChecked(false);
+                        listTaskView.get(i).setStatus("needsAction");
+                    }
+                    listTaskView.get(i).setTitle(editTextUpdate.getText().toString());
+
+                }
             }
-            listTaskView.get(i).setTitle(editTextUpdate.getText().toString());
 
-        }
         adapter.notifyDataSetChanged();
        // listView.setAdapter(adapter);
     }
@@ -347,7 +356,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
             List<TaskView> taskViewListShared = new ArrayList<>();
             taskViewListShared.add(listTaskView.get(position));
             if(taskListView != null){
-                result = new TaskListView(taskListView.getId(),taskListView.getTitle(),taskViewListShared,date);
+                result = new TaskListView(taskListView.getId(),taskListView.getTitle(),taskViewListShared,date,false,false);
                 sharedView = new SharedView(myEmail,null,result);
                 //onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 

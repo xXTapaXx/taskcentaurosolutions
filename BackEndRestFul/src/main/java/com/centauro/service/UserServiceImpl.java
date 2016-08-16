@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,9 +56,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserModel existUserByToken(String token) {
+	public UserModel existUserByEmailAndToken(String email, String token) {
 		// TODO Auto-generated method stub
-		return userRepository.existUserByToken(token);
+		return userRepository.existUserByEmailAndToken(email, token);
 	}
 
 	@Override

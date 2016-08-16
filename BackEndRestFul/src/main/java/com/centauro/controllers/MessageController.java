@@ -9,6 +9,8 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -111,6 +113,21 @@ public class MessageController {
 			}
 		
 		
+		 return response;
+		
+	}
+	
+	@RequestMapping("/haveCalendar")
+    public  Boolean haveCalendar(HttpServletRequest request) {
+		boolean response = false;
+		String listId = request.getParameter("listId");
+		CalendarModel calendars = calendarService.existCalendarByList(listId);
+ 		CalendarModel deleteCalendar = null;
+		//List<CalendarModel> calendars = calendarService.findAll();
+			if(calendars != null ){
+				response = true;
+			}
+	
 		 return response;
 		
 	}

@@ -4,6 +4,8 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.0"
 
+    useLibrary 'org.apache.http.legacy'
+
     defaultConfig {
         applicationId "app.jason.com.taskcentaurosolutionsapp"
         minSdkVersion 18
@@ -48,4 +50,6 @@ dependencies {
     }
     compile 'com.google.firebase:firebase-messaging:9.0.0'
     compile 'com.github.citux:datetimepicker:0.2.0'
+    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
+
 }

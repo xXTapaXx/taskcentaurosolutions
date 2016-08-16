@@ -1,3 +1,6 @@
+//var URL_FRONTEND = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/";
+var URL_FRONTEND = "http://localhost:8080/";
+
 jQuery(document).ready(function () {
 	
 	jQuery('#date-fr').bootstrapMaterialDatePicker
@@ -16,7 +19,9 @@ jQuery(document).ready(function () {
 	
 	$("#date-fr").hide();
 	
-	for(var i = 1; i <= jQuery(".taskListLeft").size(); i++){
+	jQuery(".alarm").popover();
+	
+	/*for(var i = 1; i <= jQuery(".taskListLeft").size(); i++){
 		 var color = getRandomColor();
 		 jQuery(".taskListLeft:nth-child("+i+") .panel").css("background-color",color);
 	 }
@@ -29,7 +34,7 @@ jQuery(document).ready(function () {
 	for(var i = 1; i <= jQuery(".taskListRight").size(); i++){
 		 var color = getRandomColor();
 		 jQuery(".taskListRight:nth-child("+i+") .panel").css("background-color",color);
-	 }
+	 }*/
 	
 	jQuery("a[data-title=deleteList]").click(function () {
 		jQuery(".dialog-decision-header").html("<h2>Eliminar</h2>");
@@ -101,7 +106,7 @@ jQuery(document).ready(function () {
 		jQuery("#idListTask").val("");
 		jQuery.ajax({
 	        type: "GET",
-	        url: "http://localhost:8080/getTaskList/" + this.id,
+	        url: URL_FRONTEND + "getTaskList/" + this.id,
 	        //data: {id:this.id},
 	    })
 	     .done(function( data, textStatus, jqXHR ) {
@@ -175,7 +180,7 @@ function changeStatus(listIdParam,idParam,statusParam){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://localhost:8080/updateTaskStatus",
+        url: URL_FRONTEND + "updateTaskStatus",
         data: {id: idParam, listId: listIdParam, status: statusParam},
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -202,7 +207,7 @@ function updateTask(listIdParam,taskIdParam){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://localhost:8080/updateTask",
+        url: URL_FRONTEND + "updateTask",
         data: {id: taskIdParam, listId: listIdParam, title: titleParam},
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -220,7 +225,7 @@ function updateTaskList(listIdParam){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "http://localhost:8080/updateTasksList",
+        url: URL_FRONTEND + "updateTasksList",
         data: {id: listIdParam, title: titleParam},
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -248,7 +253,7 @@ function insertTasks(){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "/insertTasks",
+        url: URL_FRONTEND + "insertTasks",
         data: jQuery("#formInsertTasks").serialize(),
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -265,7 +270,7 @@ function doDeleteList(){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "/deleteList",
+        url: URL_FRONTEND + "deleteList",
         data: jQuery("#formDelete").serialize(),
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -282,7 +287,7 @@ function doDeleteTask(){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "/deleteTask",
+        url: URL_FRONTEND + "deleteTask",
         data: jQuery("#formDelete").serialize(),
     })
      .done(function( data, textStatus, jqXHR ) {
@@ -301,7 +306,7 @@ function doInsertShared(){
 	jQuery.ajax({
         type: "POST",
         dataType: "json",
-        url: "/sharedList",
+        url: URL_FRONTEND + "sharedList",
         data: jQuery("#formInsertShared").serialize(),
     })
      .done(function( data, textStatus, jqXHR ) {

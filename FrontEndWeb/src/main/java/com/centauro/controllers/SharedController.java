@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,26 +41,30 @@ import com.google.gson.Gson;
 
 @Controller
 public class SharedController {
+		
+	private JSONObject user;
 	
 	 /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY =
         JacksonFactory.getDefaultInstance();
 
-	
-
+	//private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
+	private static final String URL_BACKEND = "http://localhost:8081/";
  
     @RequestMapping(value = "/sharedList", method = RequestMethod.POST)
     public Task updateTask(HttpServletRequest request) {
     	Gson gson = new Gson();
     	Task result = null;
     	String[] emails = request.getParameterValues("email");
+    	user = (JSONObject) request.getSession().getAttribute("user");
     	String id = request.getParameter("id");
     	SharedView sharedView = new SharedView();
     	TaskListView taskListView = new TaskListView();
     	List<String> emailList = new ArrayList<String>();
     	List<TaskView> listTaskView = new ArrayList<TaskView>();
     	try {
-			Tasks service = TasksQuickstart.getTasksService();
+    		//Tasks service = TasksQuickstart.getTasksService(request);
+    		Tasks service = (Tasks) request.getSession().getAttribute("service");
 			TaskList taskList = service.tasklists().get(id).execute();
 			com.google.api.services.tasks.model.Tasks task = service.tasks().list(taskList.getId()).execute();
 			taskListView.setId(taskList.getId());
@@ -76,7 +81,7 @@ public class SharedController {
 			}
 			taskListView.setTasks(listTaskView);
 			taskListView.setDate("");
-			sharedView.setMyEmail("jason@centaurosolutions.com");
+			sharedView.setMyEmail((String) user.get("email"));
 			
 			for (String email : emails) {					
 				emailList.add(email);				 	
@@ -89,7 +94,7 @@ public class SharedController {
 			
 			RestTemplate restTemplate = new RestTemplate();
 			
-			String url = "http://localhost:8081/insertShared?shared={shared}";
+			String url = URL_BACKEND + "insertShared?shared={shared}";
 			URI expanded = new UriTemplate(url).expand(shared); // this is what RestTemplate uses 
 			url = URLDecoder.decode(expanded.toString(), "UTF-8"); // java.net class
 			
@@ -109,21 +114,22 @@ public class SharedController {
         
     }
     
-    public Task updateShared(String idList, String titleList,List<TaskView> listTaskView, String date) {
+    public Task updateShared(HttpServletRequest request,String idList, String titleList,List<TaskView> listTaskView, String date) {
     	Gson gson = new Gson();
     	Task result = null;
 
     	SharedView sharedView = new SharedView();
     	TaskListView taskListView = new TaskListView();
     	List<String> emailList = new ArrayList<String>();
-
+    	user = (JSONObject) request.getSession().getAttribute("user");
+    	
 			taskListView.setId(idList);
 			taskListView.setTitle(titleList);
 			
 			taskListView.setTasks(listTaskView);
 			taskListView.setDate(date);
 			
-			sharedView.setMyEmail("jason@centaurosolutions.com");				
+			sharedView.setMyEmail((String) user.get("email"));				
 			sharedView.setEmails(null);
 			sharedView.setTaskListView(taskListView);
 			
@@ -131,7 +137,7 @@ public class SharedController {
 			
 			RestTemplate restTemplate = new RestTemplate();
 			
-			String url = "http://localhost:8081/updateShared?shared={shared}";
+			String url = URL_BACKEND + "updateShared?shared={shared}";
 			URI expanded = new UriTemplate(url).expand(shared); // this is what RestTemplate uses 
 			
 	        //String sharedResult = restTemplate.getForObject("http://tasks-dev.us-west-2.elasticbeanstalk.com/insertShared?shared={shared}", String.class,shared);

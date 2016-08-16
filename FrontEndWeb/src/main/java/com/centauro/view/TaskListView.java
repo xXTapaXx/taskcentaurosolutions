@@ -10,7 +10,9 @@ public class TaskListView {
 	public String title = null;
 	public List<TaskView> tasks = null;
 	public String date = null;
-	
+	    public Boolean isShared;
+	    public Boolean isCalendar;
+    
 	public String getTitle() {
 		return title;
 	}
@@ -38,5 +40,19 @@ public class TaskListView {
 	public List<TaskView> getTasks() {
 		return tasks;
 	}
+	public Boolean getIsShared() {
+		return isShared;
+	}
+	public void setIsShared(Boolean isShared) {
+		this.isShared = isShared;
+	}
+	public Boolean getIsCalendar() {
+		return isCalendar;
+	}
+	public void setIsCalendar(Boolean isCalendar) {
+		this.isCalendar = isCalendar;
+	}
+	
+	
 		
 }

@@ -33,8 +33,8 @@ import com.google.gson.reflect.TypeToken;
 @Controller
 public class TasksController {
 	
-	//private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
-	private static final String URL_BACKEND = "http://localhost:8081/";
+	private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
+	//private static final String URL_BACKEND = "http://localhost:8081/";
 	private JSONObject user;
 	
 	@SuppressWarnings("unchecked")

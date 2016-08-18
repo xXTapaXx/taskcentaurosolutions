@@ -4,26 +4,7 @@
   router="FAN">  
   <class id="1" language="java" name="com.centauro.controllers.TasksController" project="frontEndWeb" 
     file="/frontEndWeb/src/main/java/com/centauro/controllers/TasksController.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="173" y="118"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="2" language="java" name="com.centauro.controllers.LoginController" project="frontEndWeb" 
-    file="/frontEndWeb/src/main/java/com/centauro/controllers/LoginController.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="529" y="55"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="3" language="java" name="com.centauro.controllers.SharedController" project="frontEndWeb" 
-    file="/frontEndWeb/src/main/java/com/centauro/controllers/SharedController.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="931" y="64"/>    
+    <position height="-1" width="-1" x="643" y="247"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      

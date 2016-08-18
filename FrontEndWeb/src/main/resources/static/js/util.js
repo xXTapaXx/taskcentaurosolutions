@@ -1,5 +1,5 @@
-//var URL_FRONTEND = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/";
-var URL_FRONTEND = "http://localhost:8080/";
+var URL_FRONTEND = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/";
+//var URL_FRONTEND = "http://localhost:8080/";
 
 jQuery(document).ready(function () {
 	

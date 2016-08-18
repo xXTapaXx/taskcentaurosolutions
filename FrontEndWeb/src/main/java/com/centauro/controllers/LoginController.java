@@ -39,10 +39,10 @@ public class LoginController {
 	
 	private final String clientId = "992860120359-if29j9eqar7op5f8f02s8p4fqci7dfpk.apps.googleusercontent.com";
 	private final String clientSecret = "QjnnKJjXBQhSrwO5kNsp16wr";
-	//private final String URL_GOOGLE = "https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20https://www.googleapis.com/auth/tasks%20https://www.googleapis.com/auth/tasks.readonly&redirect_uri=http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/callBack&response_type=code&client_id=992860120359-if29j9eqar7op5f8f02s8p4fqci7dfpk.apps.googleusercontent.com&access_type=offline&approval_prompt=force";
-	private final String URL_GOOGLE = "https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20https://www.googleapis.com/auth/tasks%20https://www.googleapis.com/auth/tasks.readonly&redirect_uri=http://localhost:8080/callBack&response_type=code&client_id=992860120359-if29j9eqar7op5f8f02s8p4fqci7dfpk.apps.googleusercontent.com&access_type=offline&approval_prompt=force";
-	//private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
-		private static final String URL_BACKEND = "http://localhost:8081/";
+	private final String URL_GOOGLE = "https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20https://www.googleapis.com/auth/tasks%20https://www.googleapis.com/auth/tasks.readonly&redirect_uri=http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/callBack&response_type=code&client_id=992860120359-if29j9eqar7op5f8f02s8p4fqci7dfpk.apps.googleusercontent.com&access_type=offline&approval_prompt=force";
+	//private final String URL_GOOGLE = "https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile%20https://www.googleapis.com/auth/tasks%20https://www.googleapis.com/auth/tasks.readonly&redirect_uri=http://localhost:8080/callBack&response_type=code&client_id=992860120359-if29j9eqar7op5f8f02s8p4fqci7dfpk.apps.googleusercontent.com&access_type=offline&approval_prompt=force";
+	private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
+	//private static final String URL_BACKEND = "http://localhost:8081/";
 		private static final String URI_EMAIL = "registerUser?email=";
 		private static final String URI_TOKEN = "&token=";
 	@RequestMapping( "/")

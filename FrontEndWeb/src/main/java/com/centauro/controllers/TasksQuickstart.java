@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public class TasksQuickstart {
 	
-	//private static final String  URL_CALLBACK = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/callBack";
-		private static final String URL_CALLBACK = "http://localhost:8080/callBack";
+	private static final String  URL_CALLBACK = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/callBack";
+	//private static final String URL_CALLBACK = "http://localhost:8080/callBack";
 	/** Application name. */
     private static final String APPLICATION_NAME =
         "Google Tasks API Java Quickstart";

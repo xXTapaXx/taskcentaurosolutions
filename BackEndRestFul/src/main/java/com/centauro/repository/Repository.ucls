@@ -2,51 +2,31 @@
 <class-diagram version="1.1.10" icons="true" automaticImage="PNG" always-add-relationships="false" 
   generalizations="true" realizations="true" associations="true" dependencies="false" nesting-relationships="true" 
   router="FAN">  
-  <interface id="1" language="java" name="com.centauro.repository.UserRepository" project="backEndRestFul" 
-    file="/backEndRestFul/src/main/java/com/centauro/repository/UserRepository.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="139" y="95"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </interface>  
-  <interface id="2" language="java" name="com.centauro.repository.SharedRepository" project="backEndRestFul" 
-    file="/backEndRestFul/src/main/java/com/centauro/repository/SharedRepository.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="437" y="131"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </interface>  
-  <interface id="3" language="java" name="com.centauro.repository.CalendarRepository" project="backEndRestFul" 
+  <interface id="1" language="java" name="com.centauro.repository.CalendarRepository" project="backEndRestFul" 
     file="/backEndRestFul/src/main/java/com/centauro/repository/CalendarRepository.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="768" y="95"/>    
+    <position height="-1" width="-1" x="630" y="210"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <interface id="4" language="java" name="com.centauro.repository.TaskRepository" project="backEndRestFul" 
-    file="/backEndRestFul/src/main/java/com/centauro/repository/TaskRepository.java" binary="false" 
+  <interface id="2" language="java" name="com.centauro.repository.ListRepository" project="backEndRestFul" 
+    file="/backEndRestFul/src/main/java/com/centauro/repository/ListRepository.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="167" width="112" x="942" y="46"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="true" signature="true" 
+    <position height="63" width="112" x="624" y="167"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <interface id="5" language="java" name="com.centauro.repository.ListRepository" project="backEndRestFul" 
-    file="/backEndRestFul/src/main/java/com/centauro/repository/ListRepository.java" binary="false" 
+  <interface id="3" language="java" name="com.centauro.repository.TaskRepository" project="backEndRestFul" 
+    file="/backEndRestFul/src/main/java/com/centauro/repository/TaskRepository.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="167" width="112" x="1094" y="46"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="true" signature="true" 
+    <position height="63" width="112" x="789" y="181"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    

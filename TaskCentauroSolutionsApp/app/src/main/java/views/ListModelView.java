@@ -1,7 +1,6 @@
 package views;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by Tapa on 14/06/2016.

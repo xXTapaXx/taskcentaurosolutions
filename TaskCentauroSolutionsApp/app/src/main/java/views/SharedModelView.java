@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Tapa on 29/06/2016.
  */
-public class SharedModelView implements Serializable{
+public class SharedModelView implements Serializable {
 
     public String email;
 

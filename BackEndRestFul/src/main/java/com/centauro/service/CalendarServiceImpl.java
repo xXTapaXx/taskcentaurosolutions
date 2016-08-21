@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.centauro.exception.ShopNotFound;
 import com.centauro.model.CalendarModel;
+import com.centauro.model.ListModel;
 import com.centauro.model.CalendarModel;
 import com.centauro.repository.CalendarRepository;
 
@@ -56,5 +57,19 @@ public class CalendarServiceImpl implements CalendarService {
 		calendarRepository.delete(deleteCalendar);
 		return deleteCalendar;
 	}
+
+	@Override
+	public CalendarModel update(CalendarModel list) throws ShopNotFound {
+		CalendarModel updateCalendar = calendarRepository.findOne(list.getId());
+				
+				if (updateCalendar == null)
+					throw new ShopNotFound();
+				
+				updateCalendar.setFinishCalendar(list.getFinishCalendar());
+				
+				return updateCalendar;
+			
+	}
+
 	
 }

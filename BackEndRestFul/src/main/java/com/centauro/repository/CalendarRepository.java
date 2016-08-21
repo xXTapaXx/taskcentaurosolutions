@@ -19,7 +19,7 @@ public interface CalendarRepository extends JpaRepository<CalendarModel, Integer
 	@Query("SELECT c FROM CalendarModel c INNER JOIN c.user_id u where c.list = :list")
 	    public CalendarModel existCalendarByList(@Param("list") String list);
 	
-	@Query("SELECT c FROM CalendarModel c INNER JOIN c.user_id u where CONVERT_TZ(CURRENT_TIMESTAMP, 'UTC', 'America/Costa_Rica') <= c.date AND c.date <= :maxDate ")
+	@Query("SELECT c FROM CalendarModel c INNER JOIN c.user_id u where CONVERT_TZ(CURRENT_TIMESTAMP, 'UTC', 'America/Costa_Rica') <= c.date AND c.date <= :maxDate AND finishCalendar = '0' ")
 	  	public List<CalendarModel> getAllNotification(@Param("maxDate") Timestamp maxDate);
 		
 }

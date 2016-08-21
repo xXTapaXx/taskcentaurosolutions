@@ -37,7 +37,7 @@ public class SharedView {
         this.taskListView = taskListView;
     }
 
-    public SharedView(String myEmail,List<String> emails, TaskListView taskListView){
+    public SharedView(String myEmail, List<String> emails, TaskListView taskListView){
 
         this.myEmail = myEmail;
         this.emails = emails;

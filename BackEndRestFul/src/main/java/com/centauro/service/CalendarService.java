@@ -12,9 +12,8 @@ public interface CalendarService {
 	public CalendarModel create(CalendarModel calendar);
 	public CalendarModel existCalendarByList(String list);
 	public List<CalendarModel> getAllNotification(Timestamp maxDate);
-	public List<CalendarModel> findAll();
 	public CalendarModel delete(int id)  throws ShopNotFound;
-	/*public List<ListModel> findAll();
-	public ListModel update(ListModel list) throws ShopNotFound;
-	public ListModel findById(int id);*/
+	public CalendarModel update(CalendarModel list) throws ShopNotFound;
+	public List<CalendarModel> findAll();
+	//public CalendarModel findById(int id);
 }

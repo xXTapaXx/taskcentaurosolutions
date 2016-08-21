@@ -3,7 +3,6 @@ package Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.R;
+import app.taskcentaurosolutionsapp.R;
 import views.TaskView;
 
 /**

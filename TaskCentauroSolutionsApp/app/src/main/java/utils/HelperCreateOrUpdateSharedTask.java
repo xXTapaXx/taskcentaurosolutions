@@ -18,13 +18,9 @@ import com.google.api.services.tasks.model.TaskList;
 import java.io.IOException;
 import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.CreateTaskActivity;
-import app.jason.com.taskcentaurosolutionsapp.LoginActivity;
-import app.jason.com.taskcentaurosolutionsapp.MainActivity;
+import app.taskcentaurosolutionsapp.LoginActivity;
+import app.taskcentaurosolutionsapp.MainActivity;
 import views.SharedModelView;
-import views.TaskListView;
-import views.TaskModelView;
-import views.TaskView;
 
 /**
  * Created by Tapa on 24/06/2016.
@@ -170,9 +166,9 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
 
     @Override
     protected void onPostExecute(String output) {
-        context.mProgress.hide();
+        //context.mProgress.hide();
         if (output == null || output.isEmpty()) {
-            Toast.makeText(context,"Hubo un error al compartir la tarea",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Hubo un error al compartir la tarea", Toast.LENGTH_LONG).show();
 
         } else {
             context.onSharedFinish(sharedModelView);
@@ -195,11 +191,11 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
                         LoginActivity.REQUEST_AUTHORIZATION);
             } else {
                 Toast.makeText(context,"The following error occurred:\n"
-                        + mLastError.getMessage(),Toast.LENGTH_LONG).show();
+                        + mLastError.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         } else {
-            Toast.makeText(context,"Request cancelled.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Request cancelled.", Toast.LENGTH_LONG).show();
 
 
         }

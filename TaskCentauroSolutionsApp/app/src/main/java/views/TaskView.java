@@ -1,7 +1,5 @@
 package views;
 
-import org.json.JSONObject;
-
 import java.io.Serializable;
 
 /**
@@ -49,7 +47,7 @@ public class TaskView implements Serializable {
         isNew = aNew;
     }
 
-    public TaskView(String id, String title, String status,Boolean isNew){
+    public TaskView(String id, String title, String status, Boolean isNew){
 
         this.id = id;
         this.title = title;

@@ -12,19 +12,11 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.tasks.model.Task;
-import com.google.api.services.tasks.model.TaskList;
-import com.google.api.services.tasks.model.TaskLists;
-import com.google.api.services.tasks.model.Tasks;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.LoginActivity;
-import app.jason.com.taskcentaurosolutionsapp.MainActivity;
-import views.TaskListView;
-import views.TaskView;
+import app.taskcentaurosolutionsapp.LoginActivity;
+import app.taskcentaurosolutionsapp.MainActivity;
 
 /**
  * Created by Tapa on 24/06/2016.
@@ -97,9 +89,9 @@ public class HelperDeleteList extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean output) {
         context.mProgress.hide();
         if (!output) {
-            Toast.makeText(context,"No se pudo eliminar la lista de Tareas",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"No se pudo eliminar la lista de Tareas", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(context,"La Tarea se eliminó correctamente",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"La Tarea se eliminó correctamente", Toast.LENGTH_LONG).show();
             context.onRequest();
         }
     }
@@ -118,11 +110,11 @@ public class HelperDeleteList extends AsyncTask<Void, Void, Boolean> {
                         LoginActivity.REQUEST_AUTHORIZATION);
             } else {
                 Toast.makeText(context,"The following error occurred:\n"
-                        + mLastError.getMessage(),Toast.LENGTH_LONG).show();
+                        + mLastError.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         } else {
-            Toast.makeText(context,"Request cancelled.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Request cancelled.", Toast.LENGTH_LONG).show();
 
 
         }

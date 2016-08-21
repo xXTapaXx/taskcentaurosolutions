@@ -36,6 +36,68 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700612128199:android:37c2db57b09d9d5e",
+        "android_client_info": {
+          "package_name": "app.com.taskcentaurosolutionsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700612128199-8b61c33d2vhplrarhmd40s34lbmlk146.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOghkC90UCKetxqkb7sSsR95UH7k4RAic"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700612128199:android:bae2f11414870094",
+        "android_client_info": {
+          "package_name": "app.taskcentaurosolutionsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700612128199-8b61c33d2vhplrarhmd40s34lbmlk146.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOghkC90UCKetxqkb7sSsR95UH7k4RAic"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

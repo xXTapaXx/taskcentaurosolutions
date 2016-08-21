@@ -1,16 +1,10 @@
 package utils;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -28,7 +22,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,9 +30,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.LoginActivity;
-import app.jason.com.taskcentaurosolutionsapp.MainActivity;
-import app.jason.com.taskcentaurosolutionsapp.R;
+import app.taskcentaurosolutionsapp.LoginActivity;
+import app.taskcentaurosolutionsapp.MainActivity;
+import app.taskcentaurosolutionsapp.R;
 import views.SharedModelView;
 import views.TaskListView;
 import views.TaskView;
@@ -47,6 +40,7 @@ import views.TaskView;
 /**
  * Created by Tapa on 24/06/2016.
  */
+
 /**
  * An asynchronous task that handles the Google Tasks API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
@@ -169,7 +163,7 @@ public class HelperTask extends AsyncTask<Void, Void, List<TaskListView>> {
     }
 
     // convert inputstream to String
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
@@ -203,9 +197,9 @@ public class HelperTask extends AsyncTask<Void, Void, List<TaskListView>> {
 
     @Override
     protected void onPostExecute(List<TaskListView> output) {
-        context.mProgress.hide();
+
         if (output == null || output.size() == 0) {
-            Toast.makeText(context,"No results returned.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"No results returned.", Toast.LENGTH_LONG).show();
 
         } else {
             context.onResponseAllTasks(output);
@@ -226,11 +220,11 @@ public class HelperTask extends AsyncTask<Void, Void, List<TaskListView>> {
                         LoginActivity.REQUEST_AUTHORIZATION);
             } else {
                 Toast.makeText(context,"The following error occurred:\n"
-                        + mLastError.getMessage(),Toast.LENGTH_LONG).show();
+                        + mLastError.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         } else {
-            Toast.makeText(context,"Request cancelled.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Request cancelled.", Toast.LENGTH_LONG).show();
 
 
         }

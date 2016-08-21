@@ -34,6 +34,8 @@ public class CalendarModel implements Serializable{
 	private String list;
 	
 	private Timestamp date;
+	
+	private String finishCalendar;
 
 	public Integer getId() {
 		return id;
@@ -66,6 +68,20 @@ public class CalendarModel implements Serializable{
 	public void setDate(Timestamp date) {
 		this.date = date;
 	}
+
+	public String getFinishCalendar() {
+		return finishCalendar;
+	}
+
+	public void setFinishCalendar(String finishCalendar) {
+		this.finishCalendar = finishCalendar;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 	
 	
 	

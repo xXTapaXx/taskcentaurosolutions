@@ -52,8 +52,8 @@ public class MessageController {
 		JSONObject data   = new JSONObject();
 		JSONObject request = new JSONObject();
 		
-		data.put("title","Notificar");
-		data.put("body", "Prueba de Noficicaion");
+		data.put("title","Task Centauro Solutions");
+		data.put("body", "Le informa que tiene una tarea por finalizar");
 		data.put("icon", "myicon");
 		data.put("sound","R.drawable.ic_stat_ic_notification");
 		
@@ -100,14 +100,16 @@ public class MessageController {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-						}
-						
-						try {
-							calendarService.delete(calendar.getId());
+							
+						 calendar.setFinishCalendar("1");
+						 try {
+							calendarService.update(calendar);
 						} catch (ShopNotFound e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						}
+						
 						response = "Se notifico correctamente";
 				}
 			}

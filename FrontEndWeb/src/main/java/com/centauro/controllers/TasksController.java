@@ -246,20 +246,20 @@ public class TasksController {
     }
 	
 	@RequestMapping(value = "/insertTasks", method = RequestMethod.POST)
-    public @ResponseBody String insertTasks(HttpServletRequest request, Model model) {
+    public @ResponseBody List<TaskView> insertTasks(HttpServletRequest request, Model model) {
 		String idTasksList = null;
-		try{
-			RestTemplate restTemplate = new RestTemplate();
-			String title = request.getParameter("title");
-			String[] tasks = request.getParameterValues("task");
-			String id = request.getParameter("id");
-			String date = request.getParameter("date");
-			TaskList ListTasks = null;
-			Task resultTask = null;
-			//Tasks service = TasksQuickstart.getTasksService(request);
-    		Tasks service = (Tasks) request.getSession().getAttribute("service");
-			List<TaskView> listTaskView = new ArrayList<>();
-			SharedController shared = new SharedController();
+		RestTemplate restTemplate = new RestTemplate();
+		String title = request.getParameter("title");
+		String[] tasks = request.getParameterValues("task");
+		String id = request.getParameter("id");
+		String date = request.getParameter("date");
+		TaskList ListTasks = null;
+		Task resultTask = null;
+		//Tasks service = TasksQuickstart.getTasksService(request);
+		Tasks service = (Tasks) request.getSession().getAttribute("service");
+		List<TaskView> listTaskView = new ArrayList<>();
+		SharedController shared = new SharedController();
+		try{		
 			if(id != null && !id.isEmpty()){
 				ListTasks = service.tasklists().get(id).execute();
 				ListTasks.setTitle(title);
@@ -298,7 +298,7 @@ public class TasksController {
 			 System.out.println("Error: " + e);  
 		} 
 
-		return "taskslists";
+		return listTaskView;
 	}
 	
 	@RequestMapping(value = "/getTaskList/{id}")

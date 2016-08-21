@@ -14,16 +14,11 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
-import com.google.api.services.tasks.model.TaskLists;
-import com.google.api.services.tasks.model.Tasks;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.CreateTaskActivity;
-import app.jason.com.taskcentaurosolutionsapp.LoginActivity;
-import app.jason.com.taskcentaurosolutionsapp.MainActivity;
+import app.taskcentaurosolutionsapp.CreateTaskActivity;
+import app.taskcentaurosolutionsapp.LoginActivity;
 import views.TaskListView;
 import views.TaskView;
 
@@ -140,11 +135,11 @@ public class HelperInsertOrUpdateTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String output) {
         context.mProgress.hide();
         if (output == null || output.isEmpty()) {
-            Toast.makeText(context,"No se Agrego la Tarea",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"No se Agrego la Tarea", Toast.LENGTH_LONG).show();
             context.onFinishActivity();
 
         } else {
-            Toast.makeText(context,"Se Agrego y/o actualizó la tarea",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Se Agrego y/o actualizó la tarea", Toast.LENGTH_LONG).show();
             context.onUpdateShared(listTask);
         }
     }
@@ -163,11 +158,11 @@ public class HelperInsertOrUpdateTask extends AsyncTask<Void, Void, String> {
                         LoginActivity.REQUEST_AUTHORIZATION);
             } else {
                 Toast.makeText(context,"The following error occurred:\n"
-                        + mLastError.getMessage(),Toast.LENGTH_LONG).show();
+                        + mLastError.getMessage(), Toast.LENGTH_LONG).show();
 
             }
         } else {
-            Toast.makeText(context,"Request cancelled.",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Request cancelled.", Toast.LENGTH_LONG).show();
 
 
         }

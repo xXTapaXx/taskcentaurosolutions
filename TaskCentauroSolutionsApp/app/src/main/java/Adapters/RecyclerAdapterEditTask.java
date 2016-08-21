@@ -9,16 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.CreateTaskActivity;
-import app.jason.com.taskcentaurosolutionsapp.MainActivity;
-import app.jason.com.taskcentaurosolutionsapp.R;
-import utils.HelperSizeLista;
-import views.TaskListView;
+import app.taskcentaurosolutionsapp.CreateTaskActivity;
+import app.taskcentaurosolutionsapp.R;
 import views.TaskView;
 
 /**

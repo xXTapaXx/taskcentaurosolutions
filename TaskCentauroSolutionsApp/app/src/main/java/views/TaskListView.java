@@ -1,10 +1,6 @@
 package views;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

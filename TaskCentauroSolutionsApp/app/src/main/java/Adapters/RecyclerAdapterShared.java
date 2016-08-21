@@ -1,22 +1,15 @@
 package Adapters;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.CreateTaskActivity;
-import app.jason.com.taskcentaurosolutionsapp.R;
-import app.jason.com.taskcentaurosolutionsapp.SharedActivity;
-import views.TaskView;
+import app.taskcentaurosolutionsapp.R;
+import app.taskcentaurosolutionsapp.SharedActivity;
 
 /**
  * Created by Tapa on 23/06/2016.

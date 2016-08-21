@@ -372,7 +372,7 @@ public class SharedController {
     		
     		CalendarModel existCalendar = calendarService.existCalendarByList(sharedView.getTaskListView().getId());
     		
-		    if(existCalendar == null){
+		   
 		    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			    Date parsedDate = null;
 				try {
@@ -389,12 +389,12 @@ public class SharedController {
 	    		calendarModel.setUser_id(user.get(0));
 	    		calendarModel.setList(sharedView.getTaskListView().getId());
 	    		calendarModel.setDate(timestamp);
-	    		
+	    		calendarModel.setFinishCalendar("0");
 	    		calendarService.create(calendarModel);
 	    		
 	    			
 	    		
-		    }
+		    
     		
     	}
     	

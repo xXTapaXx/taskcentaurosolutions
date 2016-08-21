@@ -3,24 +3,19 @@ package Adapters;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
-import app.jason.com.taskcentaurosolutionsapp.MainActivity;
-import app.jason.com.taskcentaurosolutionsapp.R;
+import app.taskcentaurosolutionsapp.MainActivity;
+import app.taskcentaurosolutionsapp.R;
 import utils.HelperSizeLista;
 import views.TaskListView;
 

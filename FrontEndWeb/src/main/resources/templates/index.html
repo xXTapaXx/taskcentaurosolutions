@@ -19,7 +19,7 @@
 	                                        <h4 data-toggle="modal" data-target="#complete-dialog" class="text-left" data-title="taskListEdit" th:id="${tasksList.id}" th:text="${tasksList.title}" style="cursor: pointer;"></h4>
 	                                        </div>
 	                                        
-	                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" style="padding: 10px 0 0 30px;">
+	                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" th:style="${tasksList.isCalendar} ? 'padding: 10px 0 0 0px;' : 'padding: 10px 0 0 30px;'">
 	                                        	<a href="javascript:void(0)" class="alarm" th:if="${tasksList.isCalendar}" data-content="Popover with data-trigger" rel="popover" data-placement="bottom" data-original-title="Title" data-trigger="hover"><i class="material-icons">alarm</i></a>
 	                                        	<a href="javascript:void(0)" data-toggle="modal" data-target="#sharedModal" data-title="sharedList"  th:id="${tasksList.id}"><i class="material-icons">share</i></a>
 	    									 	<a href="javascript:void(0)" data-toggle="modal" data-target="#delete" data-title="deleteList"  th:id="${tasksList.id}"><i class="material-icons" >delete</i></a>
@@ -50,7 +50,7 @@
                                         <h4 data-toggle="modal" data-target="#complete-dialog"  class="text-left" data-title="taskListEdit"  th:id="${tasksList.id}" th:text="${tasksList.title}" style="cursor:pointer;"></h4>
                                         </div>
                                         
-                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" style="padding: 10px 0 0 30px;">
+                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" th:style="${tasksList.isCalendar} ? 'padding: 10px 0 0 0px;' : 'padding: 10px 0 0 30px;'">
                                         	<a href="javascript:void(0)" class="alarm" th:if="${tasksList.isCalendar}" data-content="Popover with data-trigger" rel="popover" data-placement="bottom" data-original-title="Title" data-trigger="hover"><i class="material-icons">alarm</i></a>	
                                         	<a href="javascript:void(0)" data-toggle="modal" data-target="#sharedModal" data-title="sharedList"  th:id="${tasksList.id}"><i class="material-icons">share</i></a>
 	    									<a href="javascript:void(0)" data-toggle="modal" data-target="#delete" data-title="deleteList"  th:id="${tasksList.id}"><i class="material-icons" >delete</i></a>
@@ -81,7 +81,7 @@
                                         <h4 data-toggle="modal" data-target="#complete-dialog"  class="text-left" data-title="taskListEdit"  th:id="${tasksList.id}" th:text="${tasksList.title}" style="cursor:pointer;"></h4>
                                         </div>
                                         
-                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" style="padding: 10px 0 0 0px;">
+                                        <div class="col-md-3 col-sm-3 col-xs-12 pull-right" th:style="${tasksList.isCalendar} ? 'padding: 10px 0 0 0px;' : 'padding: 10px 0 0 30px;'">
                                         	<a href="javascript:void(0)" class="alarm" th:if="${tasksList.isCalendar}" data-content="Popover with data-trigger" rel="popover" data-placement="bottom" data-original-title="Title" data-trigger="hover"><i class="material-icons">alarm</i></a>
                                         	<a href="javascript:void(0)" data-toggle="modal" data-target="#sharedModal" data-title="sharedList"  th:id="${tasksList.id}"><i class="material-icons">share</i></a>
 	    									<a href="javascript:void(0)" data-toggle="modal" data-target="#delete" data-title="deleteList"  th:id="${tasksList.id}"><i class="material-icons" >delete</i></a>

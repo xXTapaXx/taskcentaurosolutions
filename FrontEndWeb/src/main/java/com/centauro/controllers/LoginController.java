@@ -80,7 +80,7 @@ public class LoginController {
 	    	   jsonObject = (JSONObject) new JSONParser().parse(json);
 	    	   request.getSession().setAttribute("user", jsonObject);
 	    	   String email = (String) jsonObject.get("email");
-	    	   registerUser = post(new StringBuilder(URL_BACKEND).append(URI_EMAIL).append(URLEncoder.encode(email,"UTF-8")).append(URI_TOKEN).append("").toString(),formParameters);
+	    	   registerUser = post(new StringBuilder(URL_BACKEND).append(URI_EMAIL).append(URLEncoder.encode(email,"UTF-8")).append(URI_TOKEN).append(URLEncoder.encode(" ","UTF-8")).toString(),formParameters);
 	    	   resp.getWriter().println(json);
 	    	   
 	    	   
@@ -93,6 +93,14 @@ public class LoginController {
 		
 		return "redirect:/taskslists";
 	
+    }
+	
+	@RequestMapping(value = "/signOut")
+    public String signOut(HttpServletRequest request,HttpServletResponse resp) {
+    	
+		request.getSession().removeAttribute("user");
+		request.getSession().removeAttribute("access_token");
+		return "redirect:/taskslists";
     }
     
  // makes a GET request to url and returns body as a string

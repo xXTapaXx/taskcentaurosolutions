@@ -15,7 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/edit_task"
-        android:layout_weight="0.90" />
+        android:layout_weight="0.90"
+        android:inputType="textCapSentences|textAutoCorrect"/>
 
     <Button
         android:layout_width="5dp"

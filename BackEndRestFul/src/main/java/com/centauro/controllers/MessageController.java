@@ -7,7 +7,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,6 +26,8 @@ import com.centauro.model.UserModel;
 import com.centauro.service.CalendarService;
 import com.centauro.service.UserService;
 
+import scala.collection.mutable.HashMap;
+
 
 
 @RestController
@@ -36,7 +40,7 @@ public class MessageController {
 	private UserService userService;
 	
 	@RequestMapping("/message")
-    public  void Message(String token) throws IOException {
+    public  void Message(String token,String listId) throws IOException {
 		String url="https://fcm.googleapis.com/fcm/send";
 		URL object=new URL(url);
 
@@ -49,17 +53,18 @@ public class MessageController {
 		con.setRequestProperty("Authorization", "key=AIzaSyBhsCo3AiV4PF5KwM9Pli678fcsg6RbzfY");
 		con.setRequestMethod("POST");
 
-		JSONObject data   = new JSONObject();
+		JSONObject notification   = new JSONObject();
+		JSONObject data = new JSONObject();
 		JSONObject request = new JSONObject();
 		
-		data.put("title","Task Centauro Solutions");
-		data.put("body", "Le informa que tiene una tarea por finalizar");
-		data.put("icon", "myicon");
-		data.put("sound","R.drawable.ic_stat_ic_notification");
-		
+		notification.put("title","Task Centauro Solutions");
+		notification.put("body", "Le informa que tiene una tarea por finalizar");
+		notification.put("icon", "myicon");
+		notification.put("sound","R.drawable.ic_stat_ic_notification");
+		data.put("data", listId);
 		request.put("to", token);
-		request.put("notification", data);
-		
+		request.put("notification", notification);
+		request.put("data", data);
 
 		OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
 		wr.write(request.toString());
@@ -95,7 +100,8 @@ public class MessageController {
 						List<UserModel> users = userService.findByEmail(calendar.getUser_id().getEmail());
 						for(UserModel user : users){
 							try {
-								Message(user.getToken());
+								
+								Message(user.getToken(),calendar.getList());
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -133,6 +139,4 @@ public class MessageController {
 		 return response;
 		
 	}
-	
-	
 }

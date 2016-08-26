@@ -15,6 +15,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import java.io.IOException;
 
+import app.taskcentaurosolutionsapp.CreateActivity;
 import app.taskcentaurosolutionsapp.CreateTaskActivity;
 import app.taskcentaurosolutionsapp.LoginActivity;
 
@@ -29,7 +30,7 @@ import app.taskcentaurosolutionsapp.LoginActivity;
 public class HelperDeleteTask extends AsyncTask<Void, Void, Boolean> {
     private com.google.api.services.tasks.Tasks mService = null;
     private Exception mLastError = null;
-    public CreateTaskActivity context;
+    public CreateActivity context;
     public String listId;
     public String taskId;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
@@ -37,7 +38,7 @@ public class HelperDeleteTask extends AsyncTask<Void, Void, Boolean> {
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    public HelperDeleteTask(GoogleAccountCredential credential, CreateTaskActivity context, String listId, String taskId) {
+    public HelperDeleteTask(GoogleAccountCredential credential, CreateActivity context, String listId, String taskId) {
         this.context = context;
         this.listId = listId;
         this.taskId = taskId;

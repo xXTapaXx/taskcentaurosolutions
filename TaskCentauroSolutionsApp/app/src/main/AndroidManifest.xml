@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="app.taskcentaurosolutionsapp">
 
@@ -25,20 +26,19 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name="app.taskcentaurosolutionsapp.MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name="app.taskcentaurosolutionsapp.MyFirebaseInstanceIDService">
+        <service android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <activity
-            android:name="app.taskcentaurosolutionsapp.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -49,19 +49,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="app.taskcentaurosolutionsapp.CreateTaskActivity"
+            android:name=".CreateTaskActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="app.taskcentaurosolutionsapp.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
-            android:name="app.taskcentaurosolutionsapp.SharedActivity"
+            android:name=".SharedActivity"
             android:label="@string/title_activity_shared"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
+        <activity
+            android:name=".CreateActivity"
+            android:label="@string/title_activity_create"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

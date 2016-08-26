@@ -1,8 +1,10 @@
 package app.taskcentaurosolutionsapp;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import Adapters.RecyclerAdapterShared;
 import controllers.ServiceController;
+import views.SharedModelView;
 import views.SharedView;
 import views.TaskListView;
 
@@ -114,25 +117,53 @@ public class SharedActivity extends AppCompatActivity implements Response.Listen
     public void onAddEmailShared(){
 
         //Agregamos un item nuevo a listTaskView
-        listEmails.add(new String(edit_text_shared.getText().toString()));
-        adapter.notifyDataSetChanged();
+        if (edit_text_shared.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
+        {
+            listEmails.add(new String(edit_text_shared.getText().toString()));
+            adapter.notifyDataSetChanged();
 
-        recyclerView.setAdapter(adapter);
+            recyclerView.setAdapter(adapter);
 
-        edit_text_shared.setText("");
+            edit_text_shared.setText("");
+        }
+        else
+        {
+            Toast.makeText(SharedActivity.this, "Debe insertar un correo válido", Toast.LENGTH_SHORT).show();
+        }
+
         // listView.setAdapter(adapter);
 
     }
 
     public void onSaveShared() throws UnsupportedEncodingException {
-        String myEmail = userDetails.getString(PREF_ACCOUNT_NAME, null);
-        sharedView = new SharedView(myEmail,listEmails,taskListView);
-        //onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+        if (edit_text_shared.getText().toString().isEmpty() && listEmails.size() > 0)
+        {
+            String myEmail = userDetails.getString(PREF_ACCOUNT_NAME, null);
+            sharedView = new SharedView(myEmail,listEmails,taskListView);
+            //onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 
-        //Convertimos la respuesta json a una lista de TaskListView
-        String shared = gson.toJson(sharedView, SharedView.class);
+            //Convertimos la respuesta json a una lista de TaskListView
+            String shared = gson.toJson(sharedView, SharedView.class);
 
             serviceController.stringRequest(getString(R.string.api_url)+"/insertShared?shared="+ URLEncoder.encode(shared,"UTF-8"), Request.Method.GET, null, this, this);
+
+        }
+        else
+        {
+            new AlertDialog.Builder(SharedActivity.this)
+                    .setTitle("Compartir")
+                    .setMessage("Estas seguro que desea Salir no se compartira la lista de tarea?")
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            finish();
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    }
+            ).show();
+        }
 
         //insertShared?shared="+shared
 

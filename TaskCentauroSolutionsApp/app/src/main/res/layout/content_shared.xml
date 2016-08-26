@@ -10,14 +10,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="app.jason.com.taskcentaurosolutionsapp.SharedActivity"
+    tools:context="app.taskcentaurosolutionsapp.SharedActivity"
     tools:showIn="@layout/activity_shared">
 
     <EditText
         android:id="@+id/edit_text_shared"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
         android:hint="Correo"/>
 
     <android.support.v7.widget.RecyclerView

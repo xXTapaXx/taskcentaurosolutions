@@ -79,7 +79,7 @@ public class ServiceController {
         JsonArrayRequest arrayRequest;
 
         if (this.getParams() != null) {
-            arrayRequest = new JsonArrayRequest(this.getMethod(), this.getUrl(), new JSONObject(this.getParams()), response, error);
+            arrayRequest = new JsonArrayRequest(this.getMethod(), this.getUrl(), new JSONObject(params), response, error);
         } else {
             arrayRequest = new JsonArrayRequest(this.getMethod(), this.getUrl(), response, error);
         }

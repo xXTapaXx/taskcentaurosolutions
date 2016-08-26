@@ -72,7 +72,7 @@ public class HelperTask extends AsyncTask<Void, Void, List<TaskListView>> {
     }
 
     public List<TaskListView> getTasks(){
-        String url = context.getString(R.string.api_url)+"haveCalendar?listId=";
+        String url = context.getString(R.string.api_url)+"/haveCalendar?listId=";
         List<TaskListView> response = new ArrayList<TaskListView>();
         List<TaskView> arraylistResult = null ;
         TaskListView taskListView;
@@ -192,7 +192,7 @@ public class HelperTask extends AsyncTask<Void, Void, List<TaskListView>> {
 
     @Override
     protected void onPreExecute() {
-      //  context.mProgress.show();
+        context.mProgress.show();
     }
 
     @Override

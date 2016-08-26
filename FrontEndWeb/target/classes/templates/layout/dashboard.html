@@ -7,7 +7,7 @@
   <meta name="author" content="Jason Gamboa Solano"></meta>
   <meta name="keyword" content=""></meta>
   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-    <title>Shuttles</title>
+    <title>Task Centauro Solutions</title>
     <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
     <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
@@ -27,10 +27,26 @@
   </head>
 
  <body id="mimin" class="dashboard">
-     
+  <nav class="navbar navbar-task" role="navigation">
+    	  <div class="container">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-brand-centered">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <div class="navbar-brand navbar-brand-centered">Task Centauro Solutions</div>
+		    </div>    
+		  </div><!-- /.container-fluid -->
+		  <a href="/signOut" class="btn btn-raised btn-danger pull-right btn-signout" ><i class="material-icons">exit_to_app</i> Cerrar Sesión</a>
+		</nav>
+
      <div class="container">
      	<div class="row">
      		<div class="col-lg-12 col-md-12 col-xs-12" layout:fragment="container">
+     		
      		
      		</div>
      	</div>
@@ -133,6 +149,7 @@
     <script th:src="@{/js/randomColor.js}"></script>
     <script th:src="@{/js/moment.js}"></script>
     <script th:src="@{/js/datepicker.js}"></script>
+    <script th:src="@{/js/notify.js}"></script>
     <script th:src="@{/js/util.js}"></script>
     
 

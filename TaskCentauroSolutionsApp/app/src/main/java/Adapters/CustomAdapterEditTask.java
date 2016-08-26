@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import app.taskcentaurosolutionsapp.CreateActivity;
 import app.taskcentaurosolutionsapp.CreateTaskActivity;
 import app.taskcentaurosolutionsapp.R;
 import views.TaskView;
@@ -25,11 +26,11 @@ import views.TaskView;
 public class CustomAdapterEditTask extends BaseAdapter {
 
     private List<TaskView> task;
-    private CreateTaskActivity context;
+    private CreateActivity context;
     private LayoutInflater inflater;
     private TextWatcher watcher;
 
-    public CustomAdapterEditTask(CreateTaskActivity activity, List<TaskView> task){
+    public CustomAdapterEditTask(CreateActivity activity, List<TaskView> task){
 
         this.context = activity;
         this.task = task;
@@ -97,9 +98,9 @@ public class CustomAdapterEditTask extends BaseAdapter {
            }
 
         holder.task.setText(task.get(position).getTitle());
-
+        holder.task.requestFocus();
         if(task.get(position).getNew()){
-            holder.task.setHint("New Task");
+            holder.task.setHint("Nueva Tarea");
         }
 
             if(task.get(position).getStatus().equals("completed")){

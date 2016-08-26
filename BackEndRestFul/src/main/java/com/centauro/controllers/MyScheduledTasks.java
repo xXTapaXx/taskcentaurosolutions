@@ -17,10 +17,13 @@ public class MyScheduledTasks {
     private static final SimpleDateFormat dateFormat = 
         new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     
+    private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
+  	//private static final String URL_BACKEND = "http://localhost:8081/";
+  	 
     @Scheduled(fixedRate = 10000)
-    public void sendMailToCustomers() {
+    public void sendNotificationMessage() {
     	BufferedReader in = null;
-    	String url = "http://localhost:8081/haveNotification";
+    	String url = URL_BACKEND + "haveNotification";
     	String inputLine = null;
 		StringBuffer response = new StringBuffer();
 		
@@ -57,7 +60,7 @@ public class MyScheduledTasks {
 		System.out.println(response.toString());
     	
     	//String response = messageController.Notification();
-        System.out.println("sendMailToCustomers Job ran at " 
+        System.out.println("sendNotificationMessage at " 
             + dateFormat.format(new Date()));
         
        /* System.out.println("Response: " 

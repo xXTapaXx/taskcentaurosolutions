@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.centauro.exception.ShopNotFound;
+import com.centauro.model.CalendarModel;
 import com.centauro.model.TaskModel;
 import com.centauro.model.UserModel;
 import com.centauro.repository.TaskRepository;
@@ -45,8 +46,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserModel update(UserModel user) throws ShopNotFound {
-		// TODO Auto-generated method stub
-		return null;
+		UserModel updateUser = userRepository.findOne(user.getId());
+		
+		if (updateUser == null)
+			throw new ShopNotFound();
+		
+		updateUser.setToken(user.getToken());
+		
+		return updateUser;
 	}
 
 	@Override

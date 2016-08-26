@@ -3,6 +3,8 @@ package com.centauro.controllers;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,12 +26,15 @@ import com.centauro.view.SharedModelView;
 import com.centauro.view.SharedView;
 import com.centauro.view.TaskListView;
 import com.centauro.view.TaskView;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import scala.annotation.meta.setter;
 
 
 @Controller
@@ -203,7 +210,24 @@ public class TasksController {
 
                                 resultTask = mService.tasks().get(shared.getList_id(), shared.getTask_id()).execute();
                                 resultTask.setTitle(shared.getShared_task_id().getTask());
-                                resultTask.setStatus(shared.getShared_task_id().getStatus());
+                                if(shared.getShared_task_id().getStatus().equals("completed")){
+                                	resultTask.setStatus(shared.getShared_task_id().getStatus());				
+                    			}else{
+                    				
+                    				mService.tasks().delete(shared.getList_id(), shared.getTask_id()).execute();
+                    				Task taskList = new Task();
+                    				taskList.setTitle(shared.getShared_task_id().getTask());
+                    				
+                    				Task insertTask = mService.tasks().insert(listId,taskList).execute();
+                    				
+                    				Task resultTaskInsert = mService.tasks().get(shared.getList_id(), insertTask.getId()).execute();
+                    				resultTaskInsert.setId(shared.getTask_id());
+                    				 
+                    				 resultTask = mService.tasks().update(shared.getList_id(), insertTask.getId(), resultTaskInsert).execute();
+                    				 
+                    				 mService.tasks().delete(shared.getList_id(),insertTask.getId()).execute();
+                    			}
+                                
                                 mService.tasks().update(shared.getList_id(), shared.getTask_id(), resultTask).execute();
 
                             } else if(!shared.getShared_task_id().getTask().isEmpty() && shared.getShared_task_id().getSync() > 0){
@@ -232,10 +256,10 @@ public class TasksController {
             
             RestTemplate restTemplate = new RestTemplate();
             
-			String url = URL_BACKEND + "updateSync?shared={shared}";
-			URI expanded = new UriTemplate(url).expand(shared); // this is what RestTemplate uses 
-			
-			tasksLists = restTemplate.postForObject(expanded, null,List.class);
+			MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+			map.add("shared", shared);
+			//map.add("password", "xx");
+			tasksLists = restTemplate.postForObject(URL_BACKEND + "updateSync", map,List.class);
             
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -259,36 +283,43 @@ public class TasksController {
 		Tasks service = (Tasks) request.getSession().getAttribute("service");
 		List<TaskView> listTaskView = new ArrayList<>();
 		SharedController shared = new SharedController();
-		try{		
-			if(id != null && !id.isEmpty()){
-				ListTasks = service.tasklists().get(id).execute();
-				ListTasks.setTitle(title);
+		try{
+			if(title != null && !title.isEmpty()){
+				if(id != null && !id.isEmpty()){
+					ListTasks = service.tasklists().get(id).execute();
+					ListTasks.setTitle(title);
 
-				ListTasks = service.tasklists().update(id, ListTasks).execute();
-			}else{
-				TaskList taskList = new TaskList();
-				taskList.setTitle(title);		
-				ListTasks = service.tasklists().insert(taskList).execute();		
-			}	 
-					 if(tasks != null){
-						 for (String task : tasks) {
-							 TaskView taskView = new TaskView();
-					 			Task insertTask = new Task();
-							 	insertTask.setTitle(task);
-		
-							 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
-							 	
-							 	taskView.setId(resultTask.getId());
-								taskView.setTitle(resultTask.getTitle());
-								taskView.setStatus(resultTask.getStatus());
-								taskView.setIsNew(false);
-								
-								listTaskView.add(taskView);
-							 	
-				            }
-					 }
-					 									
-						shared.updateShared(request,ListTasks.getId(), ListTasks.getTitle(), listTaskView,date);
+					ListTasks = service.tasklists().update(id, ListTasks).execute();
+				}else{
+					TaskList taskList = new TaskList();
+					taskList.setTitle(title);		
+					ListTasks = service.tasklists().insert(taskList).execute();		
+				}	 
+						 if(tasks != null){
+							 for (String task : tasks) {
+								 TaskView taskView = new TaskView();
+								 if(task != null && !task.isEmpty()){
+									 Task insertTask = new Task();
+									 	insertTask.setTitle(task);
+				
+									 	resultTask = service.tasks().insert(ListTasks.getId(), insertTask).execute();
+									 	
+									 	taskView.setId(resultTask.getId());
+										taskView.setTitle(resultTask.getTitle());
+										taskView.setStatus(resultTask.getStatus());
+										taskView.setIsNew(false);
+										
+										listTaskView.add(taskView); 
+								 }
+								 	
+					            }
+						 }
+						 									
+							shared.updateShared(request,ListTasks.getId(), ListTasks.getTitle(), listTaskView,date);
+			}
+			
+
+			
 					 
 					 
 					 				  
@@ -354,10 +385,13 @@ public class TasksController {
     	String status = request.getParameter("status");
     	String id = request.getParameter("id");
     	String listId = request.getParameter("listId");
+    	List<TaskView> listTaskView = new ArrayList<>();
+		SharedController shared = new SharedController();
     	try {
     		//Tasks service = TasksQuickstart.getTasksService(request);
     		Tasks service = (Tasks) request.getSession().getAttribute("service");
  			Task task = service.tasks().get(listId,id).execute();
+            
 			
 			if(status.equals("needsAction")){
 				task.setStatus("completed");
@@ -367,12 +401,25 @@ public class TasksController {
 				service.tasks().delete(listId,id).execute();
 				Task taskList = new Task();
 				taskList.setTitle(title);
-
+				
 				insertTask = service.tasks().insert(listId,taskList).execute();
-
-				result = service.tasks().patch(listId, task.getId(), insertTask).execute();
+				
+				Task resultTask = service.tasks().get(listId, insertTask.getId()).execute();
+				 resultTask.setId(id);
+				 
+				 result = service.tasks().update(listId, insertTask.getId(), resultTask).execute();
+				 
+				 service.tasks().delete(listId,insertTask.getId()).execute();
 			}
+			TaskList ListTasks = service.tasklists().get(listId).execute();
+			TaskView taskView = new TaskView();
+			taskView.setId(result.getId());
+			taskView.setTitle(result.getTitle());
+			taskView.setStatus(result.getStatus());
+			taskView.setIsNew(false);
 			
+			listTaskView.add(taskView);
+			shared.updateShared(request,ListTasks.getId(), ListTasks.getTitle(), listTaskView,null);
 			//task.setTitle("Update Lista Prueba APi Google Tasks");
 			
 			 
@@ -488,11 +535,11 @@ public class TasksController {
 		            }
 
 		        }
-			 String url = URL_BACKEND + "updateDeleteList?shared={shared}";
-			 String sharedRequest = gson.toJson(sharedModelView,type);
-			 URI expanded = new UriTemplate(url).expand(sharedRequest); // this is what RestTemplate uses 
-			 
-			 List<?> result = restTemplate.postForObject(expanded,null,List.class);
+			 String sharedRequest = gson.toJson(sharedModelView,type);		 
+			 MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+			map.add("shared", sharedRequest);
+			//map.add("password", "xx");
+			List<?> result = restTemplate.postForObject(URL_BACKEND + "updateDeleteList", map,List.class);
 		}
     	
     	return "Se Eliminó la lista exitosamente";
@@ -547,11 +594,12 @@ public class TasksController {
 		            }
 
 		        }
-			 String url = URL_BACKEND + "updateDeleteTask?shared={shared}";
-			 String sharedRequest = gson.toJson(sharedView,SharedView.class);
-			 URI expanded = new UriTemplate(url).expand(sharedRequest); // this is what RestTemplate uses 
+			 String sharedRequest = gson.toJson(sharedModelView,type);		 
+			 MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+			map.add("shared", sharedRequest);
+			//map.add("password", "xx");
+			List<?> result = restTemplate.postForObject(URL_BACKEND + "updateDeleteTask", map,List.class);
 			 
-			 List<?> result = restTemplate.getForObject(expanded,List.class);
 		}
 		//service.tasks().delete(listId, taskId).execute();
     	

@@ -12,6 +12,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.tasks.model.TaskList;
 
 import java.io.IOException;
 
@@ -54,7 +55,12 @@ public class HelperDeleteList extends AsyncTask<Void, Void, Boolean> {
     public boolean deleteTasksList() {
 
         try {
-            mService.tasklists().delete(listId).execute();
+            TaskList taskList = mService.tasklists().get(listId).execute();
+
+            if(taskList != null){
+                mService.tasklists().delete(listId).execute();
+            }
+
 
 
         } catch (IOException e) {

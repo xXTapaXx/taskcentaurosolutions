@@ -10,9 +10,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:id="@+id/create_task"
+    android:id="@+id/create_task2"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="app.jason.com.taskcentaurosolutionsapp.CreateTaskActivity">
+    tools:context="app.taskcentaurosolutionsapp.CreateTaskActivity">
 
 
         <LinearLayout
@@ -42,5 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/plus" />
+            android:src="@drawable/add" />
+
+
 </android.support.design.widget.CoordinatorLayout>

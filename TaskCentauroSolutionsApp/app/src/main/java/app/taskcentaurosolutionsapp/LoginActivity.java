@@ -10,20 +10,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -36,7 +43,16 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.*;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -56,6 +72,8 @@ public class LoginActivity extends Activity
     GoogleAccountCredential mCredential;
     ProgressDialog mProgress;
 
+    private final static String TOKEN = "token";
+    private static final int RC_SIGN_IN = 9001;
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     public static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -63,8 +81,8 @@ public class LoginActivity extends Activity
 
     private static final String BUTTON_TEXT = "Call Google Tasks API";
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { TasksScopes.TASKS_READONLY, TasksScopes.TASKS };
-
+    private static final String[] SCOPES = { "email","profile",TasksScopes.TASKS_READONLY, TasksScopes.TASKS };
+    public static GoogleApiClient mGoogleApiClient;
     /**
      * Create the main activity.
      * @param savedInstanceState previously saved instance data.
@@ -85,12 +103,18 @@ public class LoginActivity extends Activity
         });
 
         mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Cargando ...");
+        mProgress.setMessage("Cargando...");
+        mProgress.setCancelable(false);
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
 
     }
 
@@ -182,7 +206,7 @@ public class LoginActivity extends Activity
                     if (accountName != null) {
 
                         GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-
+                        //GoogleSignInAccount acct = result.getSignInAccount();
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
@@ -191,6 +215,18 @@ public class LoginActivity extends Activity
                     }
                 }
                 break;
+
+            /*case RC_SIGN_IN:
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                if (result.isSuccess()) {
+                    // Signed in successfully, show authenticated UI.
+                   GoogleSignInAccount acct = result.getSignInAccount();
+                    String personName = acct.getDisplayName();
+                    String personEmail = acct.getEmail();
+                    String personId = acct.getId();
+                    Uri personPhoto = acct.getPhotoUrl();
+                    mCredential.setSelectedAccountName(personEmail);
+                }*/
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
                     getResultsFromApi();
@@ -350,7 +386,18 @@ public class LoginActivity extends Activity
 
                 String email = settings.getString(PREF_ACCOUNT_NAME,null);
                 String token = FirebaseInstanceId.getInstance().getToken();
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(TOKEN, token);
+                editor.apply();
+               /* try {
+                    String tokenUSer = mCredential.getToken();
+                 String json = GET("https://www.googleapis.com/oauth2/v1/userinfo?access_token="+mCredential.getToken());
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (GoogleAuthException e) {
+                    e.printStackTrace();
+                }*/
                 try {
                     // serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.GET, null, this, this);
                     //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
@@ -394,7 +441,7 @@ public class LoginActivity extends Activity
                     Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                     startActivity(intent);
 
-                    Toast.makeText(getApplicationContext(),"Bienvenido..." , Toast.LENGTH_LONG).show();
+                   // Toast.makeText(getApplicationContext(),"Bienvenido..." , Toast.LENGTH_LONG).show();
 
         }
     }
@@ -415,4 +462,45 @@ public class LoginActivity extends Activity
                 REQUEST_GOOGLE_PLAY_SERVICES);
         dialog.show();
     }
+
+    public static String GET(String url){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // make GET request to the given URL
+            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+            // receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        return result;
+    }
+
+    // convert inputstream to String
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
 }

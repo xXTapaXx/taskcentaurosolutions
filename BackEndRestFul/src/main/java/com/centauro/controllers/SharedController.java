@@ -321,19 +321,19 @@ public class SharedController {
 					e.printStackTrace();
 				}
 	    	}
-	    	
+	    	response.add("Delete");
 	    	return response;
 	    }
 		
 		@RequestMapping("/updateDeleteTask") 
-	    public List<SharedModel> updateDeleteTask(HttpServletRequest request) {
+	    public List<?> updateDeleteTask(HttpServletRequest request) {
 	    	
 			Gson gson = new Gson();
 	    	String shared = request.getParameter("shared");
 	    	SharedView sharedView = gson.fromJson(shared, SharedView.class);
 	    	SharedModel sharedModel = sharedService.findByTaskId(sharedView.getTaskListView().getItems().get(0).getId());
 		    TaskListView taskListView = sharedView.getTaskListView();
-	    	List<SharedModel> response = new ArrayList<SharedModel>();
+	    	List<String> response = new ArrayList<String>();
 	    	ListModel listModelResult = null;
 	    	if(sharedModel != null){
 	    		
@@ -347,6 +347,7 @@ public class SharedController {
 					}
 		    	
 	    	} 
+	    	response.add("Delete");
 	    	
 	    	return response;
 	    }
@@ -367,12 +368,13 @@ public class SharedController {
     		listModelResult = createSharedList(sharedModel.get(0),taskListView);
     		updateOrCreateTask(taskListView,sharedView,listModelResult);
     	} 
+    		
     	
     	if(sharedView.getTaskListView().getDate() != null && !sharedView.getTaskListView().getDate().isEmpty()){
     		
     		CalendarModel existCalendar = calendarService.existCalendarByList(sharedView.getTaskListView().getId());
-    		
-		   
+    			   
+    			
 		    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			    Date parsedDate = null;
 				try {
@@ -382,16 +384,21 @@ public class SharedController {
 					e.printStackTrace();
 				}
 			    Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
-	    		
-			    List<UserModel> user = userService.findByEmail(sharedView.getMyEmail());	
+	    		   		
+			    createOrUpdateCalendar(sharedView.getMyEmail(),existCalendar,timestamp,sharedView.getTaskListView().getId());
 			    
-	    		CalendarModel calendarModel = new CalendarModel();
-	    		calendarModel.setUser_id(user.get(0));
-	    		calendarModel.setList(sharedView.getTaskListView().getId());
-	    		calendarModel.setDate(timestamp);
-	    		calendarModel.setFinishCalendar("0");
-	    		calendarService.create(calendarModel);
-	    		
+	    		if(listModelResult != null){
+	        		List<SharedModel> sharedModelViewCalendar = sharedService.findBySharedListId(listModelResult);
+	        		
+	        		if(sharedModelViewCalendar.size() > 0){
+	        			for (SharedModel sharedModel2 : sharedModelViewCalendar) {
+	        				existCalendar = calendarService.existCalendarByList(sharedModel2.getList_id());
+	        				if(sharedModel2.getList_id() != null){
+	        					createOrUpdateCalendar(sharedModel2.getEmail(),existCalendar,timestamp,sharedModel2.getList_id());
+	        				}				
+						}
+	        		}
+	        	}
 	    			
 	    		
 		    
@@ -400,4 +407,23 @@ public class SharedController {
     	
     	return response;
     }
+	
+	private void createOrUpdateCalendar(String email, CalendarModel existCalendar, Timestamp timestamp, String listId){
+		List<UserModel> user = userService.findByEmail(email);	
+	    
+	    if(existCalendar == null){
+	    	CalendarModel calendarModel = new CalendarModel();
+    		calendarModel.setUser_id(user.get(0));
+    		calendarModel.setList(listId);
+    		calendarModel.setDate(timestamp);
+    		calendarModel.setFinishCalendar("0");
+    		calendarService.create(calendarModel);
+	    }else{
+	    	existCalendar.setUser_id(user.get(0));
+	    	existCalendar.setList(listId);
+	    	existCalendar.setDate(timestamp);
+	    	existCalendar.setFinishCalendar("0");
+    		calendarService.create(existCalendar);
+	    }
+	}
 }

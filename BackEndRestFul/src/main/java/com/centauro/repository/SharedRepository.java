@@ -33,7 +33,7 @@ public interface SharedRepository extends JpaRepository<SharedModel, Integer> {
 	@Query("SELECT s FROM SharedModel s WHERE s.task_id = :task_id")
 	public SharedModel findByTaskId(@Param("task_id") String task_id);
 	
-	@Query("SELECT s FROM SharedModel s WHERE s.shared_list_id = :shared_list_id")
+	@Query("SELECT DISTINCT(s) FROM SharedModel s WHERE s.shared_list_id = :shared_list_id ORDER BY s.email")
 	public List<SharedModel> findBySharedListId(@Param("shared_list_id") ListModel shared_list_id);
 	
 	@Query("SELECT s FROM SharedModel s INNER JOIN s.shared_list_id l INNER JOIN s.shared_task_id t  where s.email = :email")

@@ -1,5 +1,5 @@
-//var URL_FRONTEND = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/";
-var URL_FRONTEND = "http://localhost:8080/";
+var URL_FRONTEND = "http://tasks-frontendweb.us-west-2.elasticbeanstalk.com/";
+//var URL_FRONTEND = "http://localhost:8080/";
 
 jQuery(document).ready(function () {
 	
@@ -19,7 +19,7 @@ jQuery(document).ready(function () {
 	
 	$("#date-fr").hide();
 	
-	jQuery(".alarm").popover();
+	//jQuery(".alarm").popover();
 	
 	/*for(var i = 1; i <= jQuery(".taskListLeft").size(); i++){
 		 var color = getRandomColor();
@@ -45,16 +45,6 @@ jQuery(document).ready(function () {
 	 
 	jQuery("a[data-title=addTask]").click(function () {
 	        var task = "<div class='col-lg-12 col-md-12 col-xs-12'>" +
-							"<div class='col-lg-1 col-md-1 col-xs-1'>" +
-							"<div class='checkbox text-left'>" +
-								"<label>" +
-									"<input type='checkbox'>" +
-									"<span class='checkbox-material'>" +
-										"<span class='check'></span>" +
-									"</span>" +          				                  
-								"</label>" +
-							"</div>" +
-				      	"</div>" +
 						"<div class='col-lg-10 col-md-10 col-xs-10'>" +
 				      		"<input type='text' name='task' class='form-control'  placeholder='Tarea'></input>" +
 				      	"</div>" +
@@ -257,12 +247,12 @@ function insertTasks(){
         data: jQuery("#formInsertTasks").serialize(),
     })
      .done(function( data, textStatus, jqXHR ) {
-        alert(data);
+    	 jQuery.notify("Access granted", "success");
      })
      .fail(function( jqXHR, textStatus, errorThrown ) {
         //alert(textStatus);
     });
-	
+	window.location.href = URL_FRONTEND + "taskslists";
 }
 
 function doDeleteList(){
@@ -279,7 +269,7 @@ function doDeleteList(){
      .fail(function( jqXHR, textStatus, errorThrown ) {
         //alert(textStatus);
     });
-	
+	window.location.href = URL_FRONTEND + "taskslists";
 }
 
 function doDeleteTask(){

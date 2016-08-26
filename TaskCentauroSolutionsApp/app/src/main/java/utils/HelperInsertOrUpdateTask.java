@@ -17,6 +17,7 @@ import com.google.api.services.tasks.model.TaskList;
 
 import java.io.IOException;
 
+import app.taskcentaurosolutionsapp.CreateActivity;
 import app.taskcentaurosolutionsapp.CreateTaskActivity;
 import app.taskcentaurosolutionsapp.LoginActivity;
 import views.TaskListView;
@@ -33,13 +34,13 @@ import views.TaskView;
 public class HelperInsertOrUpdateTask extends AsyncTask<Void, Void, String> {
     private com.google.api.services.tasks.Tasks mService = null;
     private Exception mLastError = null;
-    public CreateTaskActivity context;
+    public CreateActivity context;
     public TaskListView listTask;
 
 
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
 
-    public HelperInsertOrUpdateTask(GoogleAccountCredential credential, CreateTaskActivity context,TaskListView listTask) {
+    public HelperInsertOrUpdateTask(GoogleAccountCredential credential, CreateActivity context,TaskListView listTask) {
         this.context = context;
         this.listTask = listTask;
         HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -96,11 +97,14 @@ public class HelperInsertOrUpdateTask extends AsyncTask<Void, Void, String> {
                                 mService.tasks().update(listTasks.getId(), resultTask.getId(), resultTask).execute();
                             }
                         }
-                        task.setId(resultTask.getId());
+                        if(resultTask !=null){
+                            task.setId(resultTask.getId());
+                        }
+
                     }
-
-                    response = listTasks.getId();
-
+                        if(listTasks !=null){
+                            response = listTasks.getId();
+                        }
               }
 
             } catch (IOException e) {
@@ -128,14 +132,16 @@ public class HelperInsertOrUpdateTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPreExecute() {
-       context.mProgress.show();
+       if(!context.mProgress.isShowing()){
+           context.mProgress.show();
+       }
     }
 
     @Override
     protected void onPostExecute(String output) {
-        context.mProgress.hide();
+        //context.mProgress.hide();
         if (output == null || output.isEmpty()) {
-            Toast.makeText(context,"No se Agrego la Tarea", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context,"No se Agrego la Tarea", Toast.LENGTH_LONG).show();
             context.onFinishActivity();
 
         } else {

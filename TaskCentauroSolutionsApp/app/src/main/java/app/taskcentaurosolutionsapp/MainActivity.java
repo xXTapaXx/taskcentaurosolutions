@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,14 +27,30 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import Adapters.RecyclerAdapter;
 import controllers.ServiceController;
@@ -47,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
 
     //Shared Preference
     SharedPreferences userDetails;
-
+    private final static String TOKEN = "token";
     SwipeRefreshLayout swipeRefreshLayout;
     List<TaskListView> listView;
     List<SharedModelView> sharedModelView;
@@ -106,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
 
         //Inicializamos el Progress Dialog
         mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Loading...");
-
+        mProgress.setMessage("Cargando...");
+        mProgress.setCancelable(false);
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
@@ -123,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
                 onCreateTask();
             }
         });
+
+        //Se activa el boton para regresar a la actividad anterior
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         
     }
 
@@ -139,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     }
 
     public void onClickShow(int position){
-        Intent intent = new Intent(getApplicationContext(),CreateTaskActivity.class);
+        Intent intent = new Intent(getApplicationContext(),CreateActivity.class);
         intent.putExtra("ListView",listView.get(position));
         startActivityForResult(intent,1);
     }
@@ -173,16 +193,16 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     }
 
     public void onCreateTask(){
-        Intent intent = new Intent(getApplicationContext(),CreateTaskActivity.class);
+        Intent intent = new Intent(getApplicationContext(),CreateActivity.class);
 
         startActivityForResult(intent,1);
     }
 
     public void onDeleteList(int position){
 
-        new HelperDeleteList(mCredential,this,listView.get(position).getId()).execute();
+        //new HelperDeleteList(mCredential,this,listView.get(position).getId()).execute();
 
-        if(sharedModelView != null){
+        if(sharedModelView.size() > 0){
             for(SharedModelView shared : sharedModelView){
 
                 if(listView.get(position).getId().equals(shared.getList_id())){
@@ -192,26 +212,23 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
                 }
 
             }
+
+            Type type = new TypeToken<List<SharedModelView>>(){}.getType();
+            String sharedRequest = gson.toJson(sharedModelView,type);
+
+            try {
+                // serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.GET, null, this, this);
+                //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
+
+                serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateDeleteList?shared="+ URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.POST, null, this, this);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
         }
-
-        Type type = new TypeToken<List<SharedModelView>>(){}.getType();
-        String sharedRequest = gson.toJson(sharedModelView,type);
-
-        try {
-            // serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.GET, null, this, this);
-            //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
-
-            serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateDeleteList?shared="+ URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.POST, null, this, this);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
+        new HelperDeleteList(mCredential,this,listView.get(position).getId()).execute();
         listView.remove(position);
-       /* try {
-            onRequest();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void onShared(int position){
@@ -225,14 +242,18 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
             Type type = new TypeToken<List<SharedModelView>>(){}.getType();
             String sharedRequest = gson.toJson(response,type);
 
-            try {
-               // serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.GET, null, this, this);
-                //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
+        try {
+            serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.POST, null, this, this);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
 
-                 serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+ URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.POST, null, this, this);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+        Map<String, String> map = new HashMap<>();
+
+            map.put("shared", sharedRequest);
+
+        //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared", Request.Method.POST, map, this, this);
     }
 
     @Override
@@ -270,10 +291,19 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     }
 
     public void onSignOut(){
-        userDetails.edit().remove(PREF_ACCOUNT_NAME).commit();
-        listView = new ArrayList<>();
-        onStart();
+        String email = userDetails.getString(PREF_ACCOUNT_NAME, null);
+        String token = userDetails.getString(TOKEN, null);
+        try {
+            // serviceController.jsonArrayRequest(getString(R.string.api_url)+"/updateSync?shared="+URLEncoder.encode(sharedRequest,"UTF-8"), Request.Method.GET, null, this, this);
+            //serviceController.jsonArrayRequest(getString(R.string.api_url)+"/haveShared?email="+ URLEncoder.encode(prueba,"UTF-8"), Request.Method.GET, null, this, this);
+
+            serviceController.jsonArrayRequest(getString(R.string.api_url)+"/signOut?email="+ URLEncoder.encode(email,"UTF-8") + "&token="+ URLEncoder.encode(token,"UTF-8"), Request.Method.POST, null, this, this);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
+
 
    /* //Response Listeners
     public void onResponse(List<TaskListView> response) {
@@ -297,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
             //String accountName = null;
         if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-
+                mProgress.show();
                 onRequest();
 
         } else {
@@ -316,15 +346,29 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     @Override
     public void onResponse(JSONArray response) {
 
-            if(response.length() > 0 && response != null){
-                //Convertimos la respuesta json a una lista de TaskListView
-                Type type = new TypeToken<List<SharedModelView>>(){}.getType();
-                sharedModelView = (List<SharedModelView>) gson.fromJson(response.toString(),type);
-                new HelperCreateOrUpdateSharedTask(mCredential,this,sharedModelView).execute();
-                //Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
 
-            }else{
-                onGetAllTasks();
-            }
+        try {
+            if((response.length() > 0 && response != null) && !response.get(0).equals("Delete")){
+
+                    if(response.get(0).equals("signOut")){
+                        userDetails.edit().remove(PREF_ACCOUNT_NAME).commit();
+                        listView = new ArrayList<>();
+                        onStart();
+                    }else{
+                        //Convertimos la respuesta json a una lista de TaskListView
+                        Type type = new TypeToken<List<SharedModelView>>(){}.getType();
+                        sharedModelView = (List<SharedModelView>) gson.fromJson(response.toString(),type);
+                        new HelperCreateOrUpdateSharedTask(mCredential,this,sharedModelView).execute();
+                        //Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
+
+                    }
+
+
+                }else{
+                    onGetAllTasks();
+                }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

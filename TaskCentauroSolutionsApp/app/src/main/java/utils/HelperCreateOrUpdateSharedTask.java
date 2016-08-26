@@ -58,6 +58,7 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
         String response = "";
         String listId = null;
         String listName = null;
+        Integer contador = 0;
         try {
 
 
@@ -106,9 +107,9 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
                             }
 
                         }else{
-                            if (shared.getTask_id() != null && !shared.getShared_task_id().getTask().isEmpty() && !shared.getTask_id().toString().equals("null") && shared.getShared_task_id().getSync() > 0) {
+                            if ((shared.getTask_id() != null && !shared.getTask_id().isEmpty()) && (!shared.getShared_task_id().getTask().isEmpty() && !shared.getShared_task_id().getTask().equals("null")) && shared.getShared_task_id().getSync() > 0) {
 
-                                resultTask = mService.tasks().get(shared.getList_id(), shared.getTask_id()).execute();
+                                resultTask = mService.tasks().get(listTasks.getId(), shared.getTask_id()).execute();
                                 resultTask.setTitle(shared.getShared_task_id().getTask());
                                 resultTask.setStatus(shared.getShared_task_id().getStatus());
                                 mService.tasks().update(shared.getList_id(), shared.getTask_id(), resultTask).execute();
@@ -128,7 +129,9 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
 
                     }
 
-                shared.setList_id(listTasks.getId());
+                if(listTasks != null){
+                    shared.setList_id(listTasks.getId());
+                }
                 if(resultTask != null){
                     shared.setTask_id(resultTask.getId());
                 }
@@ -179,7 +182,7 @@ public class HelperCreateOrUpdateSharedTask extends AsyncTask<Void, Void, String
 
     @Override
     protected void onCancelled() {
-      context.mProgress.hide();
+      //context.mProgress.hide();
         if (mLastError != null) {
             if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                 showGooglePlayServicesAvailabilityErrorDialog(

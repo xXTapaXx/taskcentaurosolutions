@@ -88,7 +88,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_task);
+        setContentView(R.layout.activity_create);
 
         //Date
         calendar = Calendar.getInstance();
@@ -113,7 +113,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
         listTaskView = new ArrayList<TaskView>();
 
         //Inicializamos el customAdapter
-        adapter = new CustomAdapterEditTask(this,listTaskView);
+        //adapter = new CustomAdapterEditTask(this,listTaskView);
         //adapter = new RecyclerAdapterEditTask(this,listTaskView);
 
         //Inicializamos el listView
@@ -172,7 +172,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
         TaskListView result = null;
         List<TaskView> taskViewListShared = new ArrayList<>();
         if(taskListViewResult.getTasks().size() > 0){
-            for(TaskView task : taskListView.getTasks()){
+             for(TaskView task : taskListViewResult.getTasks()){
                 taskViewListShared.add(task);
             }
         }
@@ -243,40 +243,12 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
 
     @Override
     public void onBackPressed() {
-        //llamar a tu metodora guardar
-
         onSelectDate();
-       // onSaveTasks();
-       /* try {
-
-            if(!textViewTitleTask.getText().toString().isEmpty()){
-                onUpdateShared();
-            }else{
-                onFinishActivity();
-            }
-
-            //  MainActivity.
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }*/
-
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        //llamar a tu metodora guardar
-    /*    try {
-            if(!textViewTitleTask.getText().toString().isEmpty()){*/
-                //onUpdateShared();
             onSelectDate();
-            //onSaveTasks();
-
-          //  MainActivity.
-       /* } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }*/
-
-
         return super.onSupportNavigateUp();
     }
 
@@ -298,7 +270,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
         //String accountName = null;
         if (accountName != null) {
             mCredential.setSelectedAccountName(accountName);
-            new HelperInsertOrUpdateTask(mCredential, this, taskListView).execute();
+            //new HelperInsertOrUpdateTask(mCredential, this, taskListView).execute();
 
         }
 
@@ -314,13 +286,13 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
 
         //Agregamos un item nuevo a listTaskView
         listTaskView.add(new TaskView(null,null,"needsAction",true));
-        onUpdateList();
-        //adapter.notifyDataSetChanged();
+
+        adapter.notifyDataSetChanged();
 
 
 
 
-        // listView.setAdapter(adapter);
+         listView.setAdapter(adapter);
 
 
 
@@ -357,7 +329,7 @@ public class CreateTaskActivity extends AppCompatActivity implements Response.Li
             //String accountName = null;
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                new HelperDeleteTask(mCredential, this, idList, listTaskView.get(position).getId()).execute();
+                //new HelperDeleteTask(mCredential, this, idList, listTaskView.get(position).getId()).execute();
             }
 
             String myEmail = userDetails.getString(PREF_ACCOUNT_NAME, null);

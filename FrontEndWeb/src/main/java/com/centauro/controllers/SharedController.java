@@ -48,8 +48,8 @@ public class SharedController {
     private static final JsonFactory JSON_FACTORY =
         JacksonFactory.getDefaultInstance();
 
-	private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
-	//private static final String URL_BACKEND = "http://localhost:8081/";
+    private static final String URL_BACKEND = "http://tasks-dev.us-west-2.elasticbeanstalk.com/";
+  	//private static final String URL_BACKEND = "http://localhost:8081/";
  
     @RequestMapping(value = "/sharedList", method = RequestMethod.POST)
     public Task updateTask(HttpServletRequest request) {

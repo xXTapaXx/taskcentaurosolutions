@@ -17,3 +17,21 @@
     max-height: 300px;
     overflow: hidden;
 }
+
+ .navbar-brand-centered {
+        position: absolute !important;
+        left: 50%;
+        display: block;
+        text-align: center;	
+    }
+    .navbar>.container .navbar-brand-centered, 
+    .navbar>.container-fluid .navbar-brand-centered {
+        margin-left: -151px;
+    }
+    
+.btn-signout{
+	    margin: 0.9% 1%;
+} 
+.navbar-task{
+	background:#3F51B5;
+}   
